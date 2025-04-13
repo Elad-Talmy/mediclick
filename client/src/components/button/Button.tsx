@@ -6,11 +6,11 @@ type ButtonProps = {
    isFullWidth?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({
+export const Button = ({
    label,
    isFullWidth = true,
    ...props
-}: ButtonProps) {
+}: ButtonProps) => {
    return (
       <button
          className={`mediclick-btn ${isFullWidth ? 'full-width' : ''}`}
@@ -19,4 +19,4 @@ export default function Button({
          {label}
       </button>
    );
-}
+};

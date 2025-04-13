@@ -1,10 +1,9 @@
+import { Button } from '../../components';
 import { useState } from 'react';
 import { getOtp, verifyOtp } from '../../services';
-import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_PAGE, ISRAELI_PHONE_REGEX } from '../../utils';
 import { Input } from '../../components';
-import { useAuth } from '../../context';
-import Button from '../../components/button/Button';
+import { useAuth } from '../../context/AuthContext';
 import './LoginPage.less';
 
 export const LoginPage = () => {
@@ -12,7 +11,6 @@ export const LoginPage = () => {
    const [otpSent, setOtpSent] = useState(false);
    const [otpInput, setOtpInput] = useState('');
    const { login } = useAuth();
-   const navigate = useNavigate();
 
    const handleSendOtp = async () => {
       if (!phone.match(ISRAELI_PHONE_REGEX)) {
@@ -26,6 +24,7 @@ export const LoginPage = () => {
          setOtpSent(true);
       } catch (err) {
          alert('Failed to send OTP');
+         login('1111'); //remove when backend complete *************************************
       }
    };
 
@@ -33,7 +32,6 @@ export const LoginPage = () => {
       try {
          const { token } = await verifyOtp(phone, otpInput);
          login(token);
-         navigate(DASHBOARD_PAGE);
       } catch (err) {
          alert('Invalid OTP');
       }

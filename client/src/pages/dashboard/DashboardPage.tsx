@@ -1,61 +1,42 @@
-import { useEffect, useState } from 'react';
-import { AppointmentList, MedicalFieldList } from '../../components';
-import { getAppointments, getMedicalFields, getUser } from '../../services';
+import { useEffect } from 'react';
+import { MedicalFieldList, AppointmentList } from '../../components';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { fetchUser } from '../../store/slices/userSlice';
+import { fetchMedicalFields } from '../../store/slices/medicalSlice';
+import { fetchAppointments } from '../../store/slices/appoitmentSlice';
+import { AppView, goToView } from '../../store/slices/viewSlice';
 import './DashboardPage.less';
 
-type MedicalField = {
-   id: string;
-   name: string;
-   description: string;
-};
+export const DashboardPage = () => {
+   const dispatch = useAppDispatch();
 
-type Appointment = {
-   id: string;
-   date: string;
-   doctor: string;
-   field: string;
-};
-
-export function DashboardPage() {
-   const [isLoading, setIsLoading] = useState(true);
-   const [isNewUser, setIsNewUser] = useState(false);
-   const [userName, setUserName] = useState('');
-   const [fields, setFields] = useState<MedicalField[]>([]);
-   const [appointments, setAppointments] = useState<{
-      upcoming: Appointment[];
-      past: Appointment[];
-   }>({ upcoming: [], past: [] });
+   const user = useAppSelector((state) => state.user.data);
+   const userStatus = useAppSelector((state) => state.user.status);
+   const fields = useAppSelector((state) => state.medical.fields);
+   const appointments = useAppSelector((state) => state.appointment.data);
 
    useEffect(() => {
-      const loadData = async () => {
-         setIsLoading(true);
-         const user = await getUser();
-         setIsNewUser(user.isNew);
-         setUserName(user.name);
-         const fieldData = await getMedicalFields();
-         setFields(fieldData);
-         if (!user.isNew) {
-            const appts = await getAppointments();
-            setAppointments(appts);
-         }
-         setIsLoading(false);
-      };
-      loadData();
-   }, []);
+      dispatch(fetchUser());
+      dispatch(fetchMedicalFields());
+      dispatch(fetchAppointments());
+   }, [dispatch]);
 
-   if (isLoading) return <div className="dashboard-container">Loading...</div>;
+   if (userStatus === 'loading' || !user) {
+      return <div className="dashboard-container">Loading...</div>;
+   }
 
    return (
       <div className="dashboard-container">
-         <h2 className="dashboard-header">Hello, {userName} 👋</h2>
+         <h2 className="dashboard-header">Hello, {user.name} 👋</h2>
 
-         {isNewUser ? (
+         {user.isNew ? (
             <>
                <p>Welcome to Mediclick! Let's get you started:</p>
                <MedicalFieldList fields={fields} />
                <button
                   className="action-btn"
-                  onClick={() => (window.location.href = '/book')}
+                  onClick={() => dispatch(goToView(AppView.Booking))}
                >
                   Start Booking
                </button>
@@ -72,7 +53,7 @@ export function DashboardPage() {
                />
                <button
                   className="action-btn"
-                  onClick={() => (window.location.href = '/book')}
+                  onClick={() => dispatch(goToView(AppView.Booking))}
                >
                   Book New Appointment
                </button>
@@ -80,4 +61,4 @@ export function DashboardPage() {
          )}
       </div>
    );
-}
+};

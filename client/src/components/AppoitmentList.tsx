@@ -1,9 +1,4 @@
-type Appointment = {
-   id: string;
-   date: string;
-   doctor: string;
-   field: string;
-};
+import { Appointment } from '../types';
 
 type Props = {
    title: string;
