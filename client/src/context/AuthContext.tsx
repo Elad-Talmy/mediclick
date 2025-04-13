@@ -1,38 +1,48 @@
-import { createContext, ReactNode, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DASHBOARD_PAGE, LOGIN_PAGE } from '../utils';
-import { useLocalStorage } from '../hooks';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { AppView, goToView } from '../store/slices/viewSlice';
 
 type AuthContextType = {
    token: string | null;
-   isAuthenticated: boolean;
    login: (token: string) => void;
    logout: () => void;
+   isAuthenticated: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-   const [token, setToken, removeToken] = useLocalStorage<string | null>(
-      'token',
-      null
-   );
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+   const [token, setToken] = useState<string | null>(null);
+   const dispatch = useAppDispatch();
 
-   const navigate = useNavigate();
+   useEffect(() => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+         setToken(storedToken);
+         dispatch(goToView(AppView.Dashboard));
+      }
+   }, []);
 
    const login = (newToken: string) => {
+      localStorage.setItem('token', newToken);
       setToken(newToken);
-      navigate(DASHBOARD_PAGE);
+      dispatch(goToView(AppView.Dashboard));
    };
 
    const logout = () => {
-      removeToken();
-      navigate(LOGIN_PAGE);
+      localStorage.removeItem('token');
+      setToken(null);
+      dispatch(goToView(AppView.Login));
    };
 
    return (
       <AuthContext.Provider
-         value={{ token, isAuthenticated: !!token, login, logout }}
+         value={{
+            token,
+            login,
+            logout,
+            isAuthenticated: !!token,
+         }}
       >
          {children}
       </AuthContext.Provider>
@@ -40,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAuth = () => {
-   const context = useContext(AuthContext);
-   if (!context) throw new Error('useAuth must be used within AuthProvider');
-   return context;
+   const ctx = useContext(AuthContext);
+   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
+   return ctx;
 };

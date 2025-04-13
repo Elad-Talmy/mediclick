@@ -1,19 +1,17 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardPage, LoginPage } from './pages';
-import { DASHBOARD_PAGE, LOGIN_PAGE } from './utils';
-import { AuthProvider } from './context';
+import { useAppSelector } from './hooks/useAppSelector';
+import { AppView } from './store/slices/viewSlice';
 import './App.css';
 
-function App() {
+const App = () => {
+   const currentView = useAppSelector((state) => state.view.current);
+
    return (
-      <AuthProvider>
-         <Routes>
-            <Route path={LOGIN_PAGE} element={<LoginPage />} />
-            <Route path={DASHBOARD_PAGE} element={<DashboardPage />} />
-            <Route path="*" element={<Navigate to={LOGIN_PAGE} />} />
-         </Routes>
-      </AuthProvider>
+      <>
+         {currentView === AppView.Login && <LoginPage />}
+         {currentView === AppView.Dashboard && <DashboardPage />}
+      </>
    );
-}
+};
 
 export default App;

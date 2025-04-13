@@ -1,8 +1,4 @@
-type MedicalField = {
-   id: string;
-   name: string;
-   description: string;
-};
+import { MedicalField } from '../types';
 
 type Props = {
    fields: MedicalField[];
