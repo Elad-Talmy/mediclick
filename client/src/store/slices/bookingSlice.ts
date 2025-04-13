@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type BookingStep = 'specialty' | 'doctor' | 'time' | 'confirm';
+export enum BookingStep {
+   Specialty = 'specialty',
+   Doctor = 'doctor',
+   Time = 'time',
+   Confirm = 'confirm',
+}
 
 interface BookingState {
    step: BookingStep;
@@ -10,7 +15,7 @@ interface BookingState {
 }
 
 const initialState: BookingState = {
-   step: 'specialty',
+   step: BookingStep.Specialty,
    selectedSpecialty: null,
    selectedDoctor: null,
    selectedTime: null,
@@ -25,15 +30,15 @@ export const bookingSlice = createSlice({
       },
       setSpecialty: (state, action: PayloadAction<string>) => {
          state.selectedSpecialty = action.payload;
-         state.step = 'doctor';
+         state.step = BookingStep.Doctor;
       },
       setDoctor: (state, action: PayloadAction<string>) => {
          state.selectedDoctor = action.payload;
-         state.step = 'time';
+         state.step = BookingStep.Time;
       },
       setTime: (state, action: PayloadAction<string>) => {
          state.selectedTime = action.payload;
-         state.step = 'confirm';
+         state.step = BookingStep.Confirm;
       },
       resetBooking: () => initialState,
    },

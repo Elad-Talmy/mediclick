@@ -1,7 +1,7 @@
 import { Button } from '../../components';
 import { useState } from 'react';
 import { getOtp, verifyOtp } from '../../services';
-import { DASHBOARD_PAGE, ISRAELI_PHONE_REGEX } from '../../utils';
+import { ISRAELI_PHONE_REGEX } from '../../utils';
 import { Input } from '../../components';
 import { useAuth } from '../../context/AuthContext';
 import './LoginPage.less';
