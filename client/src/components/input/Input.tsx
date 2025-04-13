@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import "./input.less"; 
+import "./Input.less"; 
 
 type InputProps = {
   label?: string;
