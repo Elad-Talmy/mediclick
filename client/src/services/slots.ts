@@ -1,5 +1,7 @@
+import { RequestField } from '../types';
+
 export const getAvailableSlots = async (
-   doctorId: string
+   doctorId: RequestField
 ): Promise<string[]> => {
    const MOCK_SLOTS = [
       '2025-04-13 09:00',

@@ -1,14 +1,14 @@
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setSpecialty } from '../../../store';
-import { MedicalField } from '../../../types';
+import { MedicalField, RequestField } from '../../../types';
 
 export const SpecialtyStep = () => {
    const dispatch = useAppDispatch();
    const fields = useAppSelector((state) => state.medical.fields);
 
-   const handleSelect = (id: string) => {
-      dispatch(setSpecialty(id));
+   const handleSelect = (speciality: RequestField) => {
+      dispatch(setSpecialty(speciality));
    };
 
    return (
@@ -19,7 +19,9 @@ export const SpecialtyStep = () => {
                <li
                   key={field.id}
                   className="booking-card"
-                  onClick={() => handleSelect(field.id)}
+                  onClick={() =>
+                     handleSelect({ id: field.id, label: field.name })
+                  }
                >
                   <strong>{field.name}</strong> — {field.description}
                </li>

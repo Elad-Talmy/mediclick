@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setDoctor } from '../../../store';
 import { getDoctorsByField } from '../../../services/doctors';
-import { Doctor } from '../../../types';
+import { Doctor, RequestField } from '../../../types';
 
 export const DoctorStep = () => {
    const dispatch = useAppDispatch();
@@ -23,8 +23,8 @@ export const DoctorStep = () => {
       });
    }, [selectedSpecialty]);
 
-   const handleSelect = (doctorId: string) => {
-      dispatch(setDoctor(doctorId));
+   const handleSelect = (doctor: RequestField) => {
+      dispatch(setDoctor(doctor));
    };
 
    if (!selectedSpecialty) return <p>No specialty selected</p>;
@@ -38,7 +38,7 @@ export const DoctorStep = () => {
                <li
                   key={doc.id}
                   className="booking-card"
-                  onClick={() => handleSelect(doc.id)}
+                  onClick={() => handleSelect({ id: doc.id, label: doc.name })}
                >
                   <strong>{doc.name}</strong> — {doc.bio}
                </li>

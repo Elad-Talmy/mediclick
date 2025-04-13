@@ -3,6 +3,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setTime } from '../../../store';
 import { getAvailableSlots } from '../../../services/slots';
+import { RequestField } from '../../../types';
 
 export const TimeStep = () => {
    const dispatch = useAppDispatch();
@@ -21,7 +22,7 @@ export const TimeStep = () => {
       });
    }, [selectedDoctor]);
 
-   const handleSelect = (slot: string) => {
+   const handleSelect = (slot: RequestField) => {
       dispatch(setTime(slot));
    };
 
@@ -36,7 +37,7 @@ export const TimeStep = () => {
                <li
                   key={index}
                   className="booking-card"
-                  onClick={() => handleSelect(slot)}
+                  onClick={() => handleSelect({ label: slot })}
                >
                   {slot}
                </li>

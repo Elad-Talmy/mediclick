@@ -1,4 +1,4 @@
-import { Doctor } from '../types';
+import { Doctor, RequestField } from '../types';
 
 const MOCK_DOCTORS: Doctor[] = [
    { id: 'd1', name: 'Dr. Cohen', bio: 'Cardiology expert', specialtyId: '1' },
@@ -12,11 +12,13 @@ const MOCK_DOCTORS: Doctor[] = [
 ];
 
 export const getDoctorsByField = async (
-   specialtyId: string
+   speciality: RequestField
 ): Promise<Doctor[]> => {
    return new Promise((resolve) => {
       setTimeout(() => {
-         resolve(MOCK_DOCTORS.filter((doc) => doc.specialtyId === specialtyId));
+         resolve(
+            MOCK_DOCTORS.filter((doc) => doc.specialtyId === speciality.id)
+         );
       }, 500);
    });
 };

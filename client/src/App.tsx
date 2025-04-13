@@ -1,4 +1,4 @@
-import { BookingPage, DashboardPage, LoginPage } from './pages';
+import { BookingPage, DashboardPage, LoginPage, SuccessPage } from './pages';
 import { useAppSelector } from './hooks/useAppSelector';
 import { AppView } from './store/slices/viewSlice';
 import { useAuth } from './context/AuthContext';
@@ -16,6 +16,7 @@ const App = () => {
          {currentView === AppView.Login && <LoginPage />}
          {currentView === AppView.Dashboard && <DashboardPage />}
          {currentView === AppView.Booking && <BookingPage />}
+         {currentView === AppView.Success && <SuccessPage />}
       </>
    );
 };

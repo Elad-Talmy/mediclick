@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RequestField } from '../../types';
 
 export enum BookingStep {
    Specialty = 'specialty',
@@ -9,9 +10,9 @@ export enum BookingStep {
 
 interface BookingState {
    step: BookingStep;
-   selectedSpecialty: string | null;
-   selectedDoctor: string | null;
-   selectedTime: string | null;
+   selectedSpecialty: RequestField | null;
+   selectedDoctor: RequestField | null;
+   selectedTime: RequestField | null;
 }
 
 const initialState: BookingState = {
@@ -28,15 +29,15 @@ export const bookingSlice = createSlice({
       goToStep: (state, action: PayloadAction<BookingStep>) => {
          state.step = action.payload;
       },
-      setSpecialty: (state, action: PayloadAction<string>) => {
+      setSpecialty: (state, action: PayloadAction<RequestField>) => {
          state.selectedSpecialty = action.payload;
          state.step = BookingStep.Doctor;
       },
-      setDoctor: (state, action: PayloadAction<string>) => {
+      setDoctor: (state, action: PayloadAction<RequestField>) => {
          state.selectedDoctor = action.payload;
          state.step = BookingStep.Time;
       },
-      setTime: (state, action: PayloadAction<string>) => {
+      setTime: (state, action: PayloadAction<RequestField>) => {
          state.selectedTime = action.payload;
          state.step = BookingStep.Confirm;
       },

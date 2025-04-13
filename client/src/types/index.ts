@@ -17,3 +17,14 @@ export type Doctor = {
    bio: string;
    specialtyId: string;
 };
+
+export type BookingRequest = {
+   specialty: RequestField;
+   doctor: RequestField;
+   time: RequestField;
+};
+
+export type RequestField = {
+   id?: string;
+   label: string;
+};

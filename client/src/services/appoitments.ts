@@ -1,3 +1,5 @@
+import { BookingRequest } from '../types';
+
 export const getAppointments = async () => {
    return {
       upcoming: [
@@ -17,4 +19,16 @@ export const getAppointments = async () => {
          },
       ],
    };
+};
+
+export const bookAppointment = async (
+   booking: BookingRequest
+): Promise<void> => {
+   // here i need to use the ids for the db
+   return new Promise((resolve) => {
+      setTimeout(() => {
+         console.log('✅ Appointment booked:', booking);
+         resolve();
+      }, 700);
+   });
 };

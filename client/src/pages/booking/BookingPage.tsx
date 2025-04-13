@@ -1,6 +1,6 @@
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { BookingStep } from '../../store';
-import { DoctorStep, SpecialtyStep, TimeStep } from './steps';
+import { ConfirmStep, DoctorStep, SpecialtyStep, TimeStep } from './steps';
 import './BookingPage.less';
 
 export const BookingPage = () => {
@@ -11,7 +11,7 @@ export const BookingPage = () => {
          {step === BookingStep.Specialty && <SpecialtyStep />}
          {step === BookingStep.Doctor && <DoctorStep />}
          {step === BookingStep.Time && <TimeStep />}
-         {/* {step === BookingStep.Confirm && <ConfirmStep />} */}
+         {step === BookingStep.Confirm && <ConfirmStep />}
       </div>
    );
 };
