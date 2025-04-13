@@ -4,6 +4,7 @@ export enum AppView {
    Login = 'login',
    Dashboard = 'dashboard',
    Booking = 'booking',
+   Success = 'success',
 }
 
 interface ViewState {
