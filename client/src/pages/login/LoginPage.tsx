@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { getOtp, verifyOtp } from '../services';
+import { getOtp, verifyOtp } from '../../services';
 import { useNavigate } from 'react-router-dom';
-import { DASHBOARD_PAGE, ISRAELI_PHONE_REGEX } from '../utils';
-import { Input } from '../components';
-import { useAuth } from '../context';
-import Button from '../components/button/Button';
+import { DASHBOARD_PAGE, ISRAELI_PHONE_REGEX } from '../../utils';
+import { Input } from '../../components';
+import { useAuth } from '../../context';
+import Button from '../../components/button/Button';
 import './LoginPage.less';
 
 export const LoginPage = () => {
