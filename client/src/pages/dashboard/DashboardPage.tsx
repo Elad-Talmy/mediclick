@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { MedicalFieldList, AppointmentList } from '../../components';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -8,7 +8,7 @@ import { fetchAppointments } from '../../store/slices/appoitmentSlice';
 import { AppView, goToView } from '../../store/slices/viewSlice';
 import './DashboardPage.less';
 
-export const DashboardPage = () => {
+export const DashboardPage = memo(() => {
    const dispatch = useAppDispatch();
 
    const user = useAppSelector((state) => state.user.data);
@@ -61,4 +61,4 @@ export const DashboardPage = () => {
          )}
       </div>
    );
-};
+});

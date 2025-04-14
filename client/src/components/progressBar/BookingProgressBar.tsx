@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { useAppSelector } from '../../hooks';
 import { STEP_ORDER } from '../../store';
 import { BookingStep } from '../../types';
@@ -10,10 +11,16 @@ export const STEP_LABELS: Record<BookingStep, string> = {
    confirm: 'Confirm Booking',
 };
 
-export const BookingProgressBar = () => {
+export const BookingProgressBar = memo(() => {
    const currentStep = useAppSelector((state) => state.booking.step);
-   const currentIndex = STEP_ORDER.indexOf(currentStep);
-   const progress = ((currentIndex + 1) / STEP_ORDER.length) * 100;
+   const currentIndex = useMemo(
+      () => STEP_ORDER.indexOf(currentStep),
+      [currentStep]
+   );
+   const progress = useMemo(
+      () => ((currentIndex + 1) / STEP_ORDER.length) * 100,
+      [currentIndex]
+   );
 
    return (
       <div className="progress-wrapper">
@@ -38,4 +45,4 @@ export const BookingProgressBar = () => {
          </div>
       </div>
    );
-};
+});

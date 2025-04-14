@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setSpecialty } from '../../../store';
 import { MedicalField, RequestField } from '../../../types';
 
-export const SpecialtyStep = () => {
+export const SpecialtyStep = memo(() => {
    const dispatch = useAppDispatch();
    const fields = useAppSelector((state) => state.medical.fields);
 
@@ -29,4 +30,4 @@ export const SpecialtyStep = () => {
          </ul>
       </>
    );
-};
+});

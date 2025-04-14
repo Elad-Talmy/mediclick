@@ -5,8 +5,9 @@ import { BookingStep } from '../../types';
 import { useBookingSession } from '../../hooks';
 import { BookingProgressBar } from '../../components';
 import './BookingPage.less';
+import { memo } from 'react';
 
-export const BookingPage = () => {
+export const BookingPage = memo(() => {
    const step = useAppSelector((state) => state.booking.step);
    const handleBack = useBookingNav();
 
@@ -24,4 +25,4 @@ export const BookingPage = () => {
          </button>
       </div>
    );
-};
+});

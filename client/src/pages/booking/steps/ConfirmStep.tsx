@@ -1,17 +1,18 @@
+import { memo, useCallback } from 'react';
 import { clearBookingSession } from '../../../context/BookingStorage';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { bookAppointment } from '../../../services';
 import { resetBooking } from '../../../store';
 import { AppView, goToView } from '../../../store/slices/viewSlice';
 
-export const ConfirmStep = () => {
+export const ConfirmStep = memo(() => {
    const dispatch = useAppDispatch();
    const toast = useToast();
    const { selectedSpecialty, selectedDoctor, selectedTime } = useAppSelector(
       (state) => state.booking
    );
 
-   const handleConfirm = async () => {
+   const handleConfirm = useCallback(async () => {
       try {
          await bookAppointment({
             specialty: selectedSpecialty!,
@@ -29,7 +30,7 @@ export const ConfirmStep = () => {
       } catch (err: any) {
          toast.error(err.message || 'Booking failed.');
       }
-   };
+   }, [selectedDoctor, selectedSpecialty, selectedTime, dispatch, toast]);
 
    return (
       <div>
@@ -50,4 +51,4 @@ export const ConfirmStep = () => {
          </button>
       </div>
    );
-};
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setDoctor } from '../../../store';
@@ -24,13 +24,14 @@ export const DoctorStep = () => {
             setDoctors(doctors);
             setLoading(false);
          })
-         .catch(() => toast.error('Could not load time slots. Try again.'))
+         .catch(() => toast.error('Could not load specialities. Try again.'))
          .finally(() => setLoading(false));
    }, [selectedSpecialty]);
 
-   const handleSelect = (doctor: RequestField) => {
-      dispatch(setDoctor(doctor));
-   };
+   const handleSelect = useCallback(
+      (doctor: RequestField) => dispatch(setDoctor(doctor)),
+      [dispatch]
+   );
 
    if (!selectedSpecialty) return <p>No specialty selected</p>;
    if (loading) return <p>Loading doctors...</p>;

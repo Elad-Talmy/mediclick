@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { setTime } from '../../../store';
 import { DAYS, getAvailableSlotsByDay } from '../../../services/slots';
@@ -26,9 +26,12 @@ export const TimeStep = () => {
          .finally(() => setLoading(false));
    }, [doctor?.id, selectedDay]);
 
-   const handleSelect = (slot: string) => {
-      dispatch(setTime({ label: `${selectedDay} ${slot}` }));
-   };
+   const handleSelect = useCallback(
+      (slot: string) => {
+         dispatch(setTime({ label: `${selectedDay} ${slot}` }));
+      },
+      [dispatch, selectedDay]
+   );
 
    return (
       <div className="calendar-container">

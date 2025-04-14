@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+   createContext,
+   useCallback,
+   useContext,
+   useEffect,
+   useState,
+} from 'react';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { AppView, goToView } from '../store/slices/viewSlice';
 
@@ -27,17 +33,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsInitializing(false);
    }, []);
 
-   const login = (newToken: string) => {
-      localStorage.setItem('token', newToken);
-      setToken(newToken);
-      dispatch(goToView(AppView.Dashboard));
-   };
+   const login = useCallback(
+      (newToken: string) => {
+         localStorage.setItem('token', newToken);
+         setToken(newToken);
+         dispatch(goToView(AppView.Dashboard));
+      },
+      [localStorage]
+   );
 
-   const logout = () => {
+   const logout = useCallback(() => {
       localStorage.removeItem('token');
       setToken(null);
       dispatch(goToView(AppView.Login));
-   };
+   }, [localStorage]);
 
    return (
       <AuthContext.Provider
