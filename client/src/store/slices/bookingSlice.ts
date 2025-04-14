@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { BookingState, BookingStep, RequestField } from '../../types';
+import {
+   Appointment,
+   BookingState,
+   BookingStep,
+   RequestField,
+} from '../../types';
 import { loadBookingSession } from '../../context/BookingStorage';
 
 export const STEP_ORDER = [
@@ -43,7 +48,12 @@ export const bookingSlice = createSlice({
             state.step = STEP_ORDER[currentIndex - 1];
          }
       },
-
+      resumeBooking: (state, action: PayloadAction<Appointment>) => {
+         state.step = BookingStep.Time;
+         state.selectedSpecialty = action.payload.speciality;
+         state.selectedDoctor = action.payload.doctor;
+         state.selectedTime = null;
+      },
       resetBooking: () => initialState,
    },
 });
@@ -54,5 +64,6 @@ export const {
    setDoctor,
    setTime,
    goToPreviousStep,
+   resumeBooking,
    resetBooking,
 } = bookingSlice.actions;

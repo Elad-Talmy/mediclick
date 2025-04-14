@@ -6,9 +6,9 @@ export type MedicalField = {
 
 export type Appointment = {
    id: string;
-   date: string;
-   doctor: string;
-   field: string;
+   time: RequestField;
+   doctor: RequestField;
+   speciality: RequestField;
 };
 
 export type Doctor = {
@@ -27,6 +27,7 @@ export type BookingRequest = {
 export type RequestField = {
    id?: string;
    label: string;
+   pfp?: string;
 };
 
 export enum BookingStep {

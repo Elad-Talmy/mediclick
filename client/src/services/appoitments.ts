@@ -2,25 +2,36 @@ import { BookingRequest } from '../types';
 
 export const getAppointments = async () => {
    try {
+      console.log('apps');
       return {
          upcoming: [
             {
                id: 'a1',
-               date: '2025-04-20',
-               doctor: 'Dr. Maya',
-               field: 'Dermatology',
+               time: { label: '2025-04-20' },
+               doctor: {
+                  label: 'Dr. Maya',
+                  id: 'aaa',
+                  pfp: 'https://i.pravatar.cc/150?img=47',
+               },
+               speciality: { label: 'Dermatology', id: '1234' },
             },
          ],
          past: [
             {
                id: 'a2',
-               date: '2025-03-10',
-               doctor: 'Dr. Ben',
-               field: 'Pediatrics',
+               time: { label: '2025-03-10' },
+               doctor: {
+                  label: 'Dr. Ben',
+                  id: 'aa',
+                  pfp: 'https://i.pravatar.cc/150?img=51',
+               },
+               speciality: { label: 'Pediatrics', id: '123' },
             },
          ],
       };
    } catch (err) {
+      console.error('Fetch appointments failed:', err);
+
       throw new Error('Could not load appointments.');
    }
 };
