@@ -28,3 +28,17 @@ export type RequestField = {
    id?: string;
    label: string;
 };
+
+export enum BookingStep {
+   Specialty = 'specialty',
+   Doctor = 'doctor',
+   Time = 'time',
+   Confirm = 'confirm',
+}
+
+export interface BookingState {
+   step: BookingStep;
+   selectedSpecialty: RequestField | null;
+   selectedDoctor: RequestField | null;
+   selectedTime: RequestField | null;
+}

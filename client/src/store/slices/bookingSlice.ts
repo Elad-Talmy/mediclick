@@ -1,28 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RequestField } from '../../types';
+import { BookingState, BookingStep, RequestField } from '../../types';
+import { loadBookingSession } from '../../context/BookingStorage';
 
-export enum BookingStep {
-   Specialty = 'specialty',
-   Doctor = 'doctor',
-   Time = 'time',
-   Confirm = 'confirm',
-}
-
-const STEP_ORDER = [
+export const STEP_ORDER = [
    BookingStep.Specialty,
    BookingStep.Doctor,
    BookingStep.Time,
    BookingStep.Confirm,
 ] as const;
 
-interface BookingState {
-   step: BookingStep;
-   selectedSpecialty: RequestField | null;
-   selectedDoctor: RequestField | null;
-   selectedTime: RequestField | null;
-}
+const persisted = loadBookingSession();
 
-const initialState: BookingState = {
+const initialState: BookingState = persisted || {
    step: BookingStep.Specialty,
    selectedSpecialty: null,
    selectedDoctor: null,

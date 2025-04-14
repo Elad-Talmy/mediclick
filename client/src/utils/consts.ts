@@ -1,4 +1,4 @@
-import { BookingStep } from '../store';
+import { BookingStep } from '../types';
 
 //Regex
 export const ISRAELI_PHONE_REGEX = /^05\d{8}$/;

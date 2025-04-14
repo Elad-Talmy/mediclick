@@ -1,15 +1,20 @@
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { BookingStep } from '../../store';
 import { ConfirmStep, DoctorStep, SpecialtyStep, TimeStep } from './steps';
 import { useBookingNav } from '../../hooks/useBookingNav';
+import { BookingStep } from '../../types';
+import { useBookingSession } from '../../hooks';
+import { BookingProgressBar } from '../../components';
 import './BookingPage.less';
 
 export const BookingPage = () => {
    const step = useAppSelector((state) => state.booking.step);
    const handleBack = useBookingNav();
 
+   useBookingSession();
+
    return (
       <div className="booking-container">
+         <BookingProgressBar />
          {step === BookingStep.Specialty && <SpecialtyStep />}
          {step === BookingStep.Doctor && <DoctorStep />}
          {step === BookingStep.Time && <TimeStep />}

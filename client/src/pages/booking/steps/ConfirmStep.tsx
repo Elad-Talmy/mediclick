@@ -1,6 +1,7 @@
+import { clearBookingSession } from '../../../context/BookingStorage';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { bookAppointment } from '../../../services';
-import { resetBooking, showToast } from '../../../store';
+import { resetBooking } from '../../../store';
 import { AppView, goToView } from '../../../store/slices/viewSlice';
 
 export const ConfirmStep = () => {
@@ -21,6 +22,7 @@ export const ConfirmStep = () => {
 
       //Add error toast when backend ready
 
+      clearBookingSession();
       dispatch(resetBooking());
       dispatch(goToView(AppView.Success));
    };
