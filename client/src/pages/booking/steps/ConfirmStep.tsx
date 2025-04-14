@@ -1,11 +1,11 @@
-import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { useAppSelector } from '../../../hooks/useAppSelector';
+import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { bookAppointment } from '../../../services';
-import { resetBooking } from '../../../store';
+import { resetBooking, showToast } from '../../../store';
 import { AppView, goToView } from '../../../store/slices/viewSlice';
 
 export const ConfirmStep = () => {
    const dispatch = useAppDispatch();
+   const toast = useToast();
    const { selectedSpecialty, selectedDoctor, selectedTime } = useAppSelector(
       (state) => state.booking
    );
@@ -16,6 +16,10 @@ export const ConfirmStep = () => {
          doctor: selectedDoctor!,
          time: selectedTime!,
       });
+
+      toast.success('Appointment confirmed!');
+
+      //Add error toast when backend ready
 
       dispatch(resetBooking());
       dispatch(goToView(AppView.Success));

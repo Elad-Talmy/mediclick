@@ -2,7 +2,7 @@ import { BookingPage, DashboardPage, LoginPage, SuccessPage } from './pages';
 import { useAppSelector } from './hooks/useAppSelector';
 import { AppView } from './store/slices/viewSlice';
 import { useAuth } from './context/AuthContext';
-import { FullScreenLoader } from './components';
+import { FullScreenLoader, Toast } from './components';
 import './App.css';
 
 const App = () => {
@@ -17,6 +17,7 @@ const App = () => {
          {currentView === AppView.Dashboard && <DashboardPage />}
          {currentView === AppView.Booking && <BookingPage />}
          {currentView === AppView.Success && <SuccessPage />}
+         <Toast />
       </>
    );
 };
