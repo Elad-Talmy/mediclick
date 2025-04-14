@@ -1,48 +1,66 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { useAppSelector } from '../../../hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { setTime } from '../../../store';
-import { getAvailableSlots } from '../../../services/slots';
-import { RequestField } from '../../../types';
+import { DAYS, getAvailableSlotsByDay } from '../../../services/slots';
+import './TimeStep.less';
 
 export const TimeStep = () => {
    const dispatch = useAppDispatch();
-   const selectedDoctor = useAppSelector(
-      (state) => state.booking.selectedDoctor
-   );
+   const doctor = useAppSelector((state) => state.booking.selectedDoctor);
+
+   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
    const [slots, setSlots] = useState<string[]>([]);
-   const [loading, setLoading] = useState(true);
+   const [loading, setLoading] = useState(false);
 
    useEffect(() => {
-      if (!selectedDoctor) return;
+      if (!doctor || !selectedDay) return;
       setLoading(true);
-      getAvailableSlots(selectedDoctor).then((res) => {
+
+      getAvailableSlotsByDay(doctor.id!, selectedDay).then((res) => {
          setSlots(res);
          setLoading(false);
       });
-   }, [selectedDoctor]);
+   }, [doctor?.id, selectedDay]);
 
-   const handleSelect = (slot: RequestField) => {
-      dispatch(setTime(slot));
+   const handleSelect = (slot: string) => {
+      dispatch(setTime({ label: `${selectedDay} ${slot}` }));
    };
 
-   if (!selectedDoctor) return <p>No doctor selected</p>;
-   if (loading) return <p>Loading available slots...</p>;
-
    return (
-      <>
+      <div className="calendar-container">
          <h2>Choose a Time Slot</h2>
-         <ul className="booking-list">
-            {slots.map((slot, index) => (
-               <li
-                  key={index}
-                  className="booking-card"
-                  onClick={() => handleSelect({ label: slot })}
+
+         <div className="day-selector">
+            {DAYS.map((day) => (
+               <button
+                  key={day}
+                  className={`day-btn ${day === selectedDay ? 'active' : ''}`}
+                  onClick={() => setSelectedDay(day)}
                >
-                  {slot}
-               </li>
+                  {new Date(day).toLocaleDateString('en-GB', {
+                     weekday: 'short',
+                     day: 'numeric',
+                     month: 'short',
+                  })}
+               </button>
             ))}
-         </ul>
-      </>
+         </div>
+
+         {loading ? (
+            <p>Loading slots...</p>
+         ) : (
+            <div className="slot-grid">
+               {slots.map((slot) => (
+                  <button
+                     key={slot}
+                     className="slot"
+                     onClick={() => handleSelect(slot)}
+                  >
+                     {slot}
+                  </button>
+               ))}
+            </div>
+         )}
+      </div>
    );
 };
