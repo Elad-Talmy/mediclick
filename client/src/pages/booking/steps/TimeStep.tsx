@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { setTime } from '../../../store';
 import { DAYS, getAvailableSlotsByDay } from '../../../services/slots';
 import './TimeStep.less';
 
 export const TimeStep = () => {
    const dispatch = useAppDispatch();
+   const toast = useToast();
    const doctor = useAppSelector((state) => state.booking.selectedDoctor);
 
    const [selectedDay, setSelectedDay] = useState(DAYS[0]);
@@ -16,10 +17,13 @@ export const TimeStep = () => {
       if (!doctor || !selectedDay) return;
       setLoading(true);
 
-      getAvailableSlotsByDay(doctor.id!, selectedDay).then((res) => {
-         setSlots(res);
-         setLoading(false);
-      });
+      getAvailableSlotsByDay(doctor.id!, selectedDay)
+         .then((res) => {
+            setSlots(res);
+            setLoading(false);
+         })
+         .catch(() => toast.error('Could not load time slots. Try again.'))
+         .finally(() => setLoading(false));
    }, [doctor?.id, selectedDay]);
 
    const handleSelect = (slot: string) => {

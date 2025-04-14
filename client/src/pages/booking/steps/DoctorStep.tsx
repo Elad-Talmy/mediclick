@@ -4,8 +4,10 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setDoctor } from '../../../store';
 import { getDoctorsByField } from '../../../services/doctors';
 import { Doctor, RequestField } from '../../../types';
+import { useToast } from '../../../hooks';
 
 export const DoctorStep = () => {
+   const toast = useToast();
    const dispatch = useAppDispatch();
    const selectedSpecialty = useAppSelector(
       (state) => state.booking.selectedSpecialty
@@ -17,10 +19,13 @@ export const DoctorStep = () => {
       if (!selectedSpecialty) return;
 
       setLoading(true);
-      getDoctorsByField(selectedSpecialty).then((doctors) => {
-         setDoctors(doctors);
-         setLoading(false);
-      });
+      getDoctorsByField(selectedSpecialty)
+         .then((doctors) => {
+            setDoctors(doctors);
+            setLoading(false);
+         })
+         .catch(() => toast.error('Could not load time slots. Try again.'))
+         .finally(() => setLoading(false));
    }, [selectedSpecialty]);
 
    const handleSelect = (doctor: RequestField) => {

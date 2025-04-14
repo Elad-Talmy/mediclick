@@ -12,19 +12,23 @@ export const ConfirmStep = () => {
    );
 
    const handleConfirm = async () => {
-      await bookAppointment({
-         specialty: selectedSpecialty!,
-         doctor: selectedDoctor!,
-         time: selectedTime!,
-      });
+      try {
+         await bookAppointment({
+            specialty: selectedSpecialty!,
+            doctor: selectedDoctor!,
+            time: selectedTime!,
+         });
 
-      toast.success('Appointment confirmed!');
+         toast.success('Appointment confirmed!');
 
-      //Add error toast when backend ready
+         //Add error toast when backend ready
 
-      clearBookingSession();
-      dispatch(resetBooking());
-      dispatch(goToView(AppView.Success));
+         clearBookingSession();
+         dispatch(resetBooking());
+         dispatch(goToView(AppView.Success));
+      } catch (err: any) {
+         toast.error(err.message || 'Booking failed.');
+      }
    };
 
    return (
