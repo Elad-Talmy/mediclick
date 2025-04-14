@@ -8,6 +8,13 @@ export enum BookingStep {
    Confirm = 'confirm',
 }
 
+const STEP_ORDER = [
+   BookingStep.Specialty,
+   BookingStep.Doctor,
+   BookingStep.Time,
+   BookingStep.Confirm,
+] as const;
+
 interface BookingState {
    step: BookingStep;
    selectedSpecialty: RequestField | null;
@@ -41,9 +48,22 @@ export const bookingSlice = createSlice({
          state.selectedTime = action.payload;
          state.step = BookingStep.Confirm;
       },
+      goToPreviousStep: (state) => {
+         const currentIndex = STEP_ORDER.indexOf(state.step);
+         if (currentIndex > 0) {
+            state.step = STEP_ORDER[currentIndex - 1];
+         }
+      },
+
       resetBooking: () => initialState,
    },
 });
 
-export const { goToStep, setSpecialty, setDoctor, setTime, resetBooking } =
-   bookingSlice.actions;
+export const {
+   goToStep,
+   setSpecialty,
+   setDoctor,
+   setTime,
+   goToPreviousStep,
+   resetBooking,
+} = bookingSlice.actions;
