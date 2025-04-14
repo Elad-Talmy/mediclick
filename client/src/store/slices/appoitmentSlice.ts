@@ -1,15 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Appointment } from '../../types';
 import { getAppointments } from '../../services';
 
 type AppointmentState = {
-   data: {
-      upcoming: Appointment[];
-      past: Appointment[];
-   };
+   upcoming: Appointment[];
+   past: Appointment[];
 };
 
-export const fetchAppointments = createAsyncThunk<AppointmentState['data']>(
+export const fetchAppointments = createAsyncThunk<AppointmentState>(
    'appointment/fetchAppointments',
    async (_, thunkAPI) => {
       try {
@@ -23,12 +21,22 @@ export const fetchAppointments = createAsyncThunk<AppointmentState['data']>(
 export const appointmentSlice = createSlice({
    name: 'appointment',
    initialState: {
-      data: { upcoming: [], past: [] },
+      upcoming: [],
+      past: [],
    } as AppointmentState,
-   reducers: {},
+   reducers: {
+      removeAppointment: (state, action: PayloadAction<string>) => {
+         state.upcoming = state.upcoming.filter(
+            (appointment) => appointment.id !== action.payload
+         );
+      },
+   },
    extraReducers: (builder) => {
       builder.addCase(fetchAppointments.fulfilled, (state, action) => {
-         state.data = action.payload;
+         state.past = action.payload.past;
+         state.upcoming = action.payload.upcoming;
       });
    },
 });
+
+export const { removeAppointment } = appointmentSlice.actions;

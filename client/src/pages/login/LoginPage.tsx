@@ -1,7 +1,7 @@
 import { Button } from '../../components';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getOtp, verifyOtp } from '../../services';
-import { DASHBOARD_PAGE, ISRAELI_PHONE_REGEX } from '../../utils';
+import { ISRAELI_PHONE_REGEX } from '../../utils';
 import { Input } from '../../components';
 import { useAuth } from '../../context/AuthContext';
 import './LoginPage.less';
@@ -12,7 +12,7 @@ export const LoginPage = () => {
    const [otpInput, setOtpInput] = useState('');
    const { login } = useAuth();
 
-   const handleSendOtp = async () => {
+   const handleSendOtp = useCallback(async () => {
       if (!phone.match(ISRAELI_PHONE_REGEX)) {
          alert('Please enter a valid Israeli phone number.'); //Log to file
          return;
@@ -26,16 +26,16 @@ export const LoginPage = () => {
          alert('Failed to send OTP');
          login('1111'); //remove when backend complete *************************************
       }
-   };
+   }, [phone, ISRAELI_PHONE_REGEX]);
 
-   const handleVerifyOtp = async () => {
+   const handleVerifyOtp = useCallback(async () => {
       try {
          const { token } = await verifyOtp(phone, otpInput);
          login(token);
       } catch (err) {
          alert('Invalid OTP');
       }
-   };
+   }, [phone, otpInput]);
 
    return (
       <div className="login-container">

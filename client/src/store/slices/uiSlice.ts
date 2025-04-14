@@ -1,24 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+type ToastType = 'success' | 'error';
+
+type UiState = {
+   isLoading: boolean;
+   modal: null | string;
+   toast: null | {
+      message: string;
+      type: ToastType;
+   };
+};
+
+const initialState: UiState = {
    isLoading: false,
-   modal: null as string | null,
+   modal: null,
+   toast: null,
 };
 
 export const uiSlice = createSlice({
    name: 'ui',
    initialState,
    reducers: {
-      setLoading: (state, action) => {
+      setLoading: (state, action: PayloadAction<boolean>) => {
          state.isLoading = action.payload;
       },
-      openModal: (state, action) => {
-         state.modal = action.payload;
+      showToast: (
+         state,
+         action: PayloadAction<{ message: string; type: ToastType }>
+      ) => {
+         state.toast = action.payload;
       },
-      closeModal: (state) => {
-         state.modal = null;
+      clearToast: (state) => {
+         state.toast = null;
       },
    },
 });
 
-export const { setLoading, openModal, closeModal } = uiSlice.actions;
+export const { setLoading, showToast, clearToast } = uiSlice.actions;

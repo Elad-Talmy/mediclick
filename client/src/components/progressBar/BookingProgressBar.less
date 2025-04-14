@@ -1,0 +1,49 @@
+.progress-wrapper {
+   padding: 1rem;
+   font-family: 'Segoe UI', sans-serif;
+}
+
+.progress-text {
+   font-size: 1rem;
+   font-weight: 500;
+   margin-bottom: 0.5rem;
+   color: #00796b;
+}
+
+.progress-bar {
+   background: #e0f2f1;
+   height: 6px;
+   border-radius: 4px;
+   overflow: hidden;
+   margin-bottom: 1rem;
+}
+
+.progress-fill {
+   background: #009688;
+   height: 100%;
+   transition: width 0.3s ease;
+}
+
+.progress-steps {
+   display: flex;
+   justify-content: space-between;
+   margin-top: 0.5rem;
+}
+
+.progress-step {
+   width: 28px;
+   height: 28px;
+   border-radius: 50%;
+   background: #cfd8dc;
+   color: white;
+   font-size: 0.8rem;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-weight: bold;
+   transition: background 0.2s;
+}
+
+.progress-step.active {
+   background: #00796b;
+}

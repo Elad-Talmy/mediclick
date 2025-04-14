@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+   createContext,
+   useCallback,
+   useContext,
+   useEffect,
+   useState,
+} from 'react';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { AppView, goToView } from '../store/slices/viewSlice';
 
@@ -7,12 +13,15 @@ type AuthContextType = {
    login: (token: string) => void;
    logout: () => void;
    isAuthenticated: boolean;
+   isInitializing: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
    const [token, setToken] = useState<string | null>(null);
+   const [isInitializing, setIsInitializing] = useState(true);
+
    const dispatch = useAppDispatch();
 
    useEffect(() => {
@@ -21,19 +30,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
          setToken(storedToken);
          dispatch(goToView(AppView.Dashboard));
       }
+      setIsInitializing(false);
    }, []);
 
-   const login = (newToken: string) => {
-      localStorage.setItem('token', newToken);
-      setToken(newToken);
-      dispatch(goToView(AppView.Dashboard));
-   };
+   const login = useCallback(
+      (newToken: string) => {
+         localStorage.setItem('token', newToken);
+         setToken(newToken);
+         dispatch(goToView(AppView.Dashboard));
+      },
+      [localStorage]
+   );
 
-   const logout = () => {
+   const logout = useCallback(() => {
       localStorage.removeItem('token');
       setToken(null);
       dispatch(goToView(AppView.Login));
-   };
+   }, [localStorage]);
 
    return (
       <AuthContext.Provider
@@ -42,6 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             login,
             logout,
             isAuthenticated: !!token,
+            isInitializing,
          }}
       >
          {children}

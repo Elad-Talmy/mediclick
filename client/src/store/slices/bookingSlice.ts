@@ -1,16 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+   Appointment,
+   BookingState,
+   BookingStep,
+   RequestField,
+} from '../../types';
+import { loadBookingSession } from '../../context/BookingStorage';
 
-type BookingStep = 'specialty' | 'doctor' | 'time' | 'confirm';
+export const STEP_ORDER = [
+   BookingStep.Specialty,
+   BookingStep.Doctor,
+   BookingStep.Time,
+   BookingStep.Confirm,
+] as const;
 
-interface BookingState {
-   step: BookingStep;
-   selectedSpecialty: string | null;
-   selectedDoctor: string | null;
-   selectedTime: string | null;
-}
+const persisted = loadBookingSession();
 
-const initialState: BookingState = {
-   step: 'specialty',
+const initialState: BookingState = persisted || {
+   step: BookingStep.Specialty,
    selectedSpecialty: null,
    selectedDoctor: null,
    selectedTime: null,
@@ -23,21 +30,40 @@ export const bookingSlice = createSlice({
       goToStep: (state, action: PayloadAction<BookingStep>) => {
          state.step = action.payload;
       },
-      setSpecialty: (state, action: PayloadAction<string>) => {
+      setSpecialty: (state, action: PayloadAction<RequestField>) => {
          state.selectedSpecialty = action.payload;
-         state.step = 'doctor';
+         state.step = BookingStep.Doctor;
       },
-      setDoctor: (state, action: PayloadAction<string>) => {
+      setDoctor: (state, action: PayloadAction<RequestField>) => {
          state.selectedDoctor = action.payload;
-         state.step = 'time';
+         state.step = BookingStep.Time;
       },
-      setTime: (state, action: PayloadAction<string>) => {
+      setTime: (state, action: PayloadAction<RequestField>) => {
          state.selectedTime = action.payload;
-         state.step = 'confirm';
+         state.step = BookingStep.Confirm;
+      },
+      goToPreviousStep: (state) => {
+         const currentIndex = STEP_ORDER.indexOf(state.step);
+         if (currentIndex > 0) {
+            state.step = STEP_ORDER[currentIndex - 1];
+         }
+      },
+      resumeBooking: (state, action: PayloadAction<Appointment>) => {
+         state.step = BookingStep.Time;
+         state.selectedSpecialty = action.payload.speciality;
+         state.selectedDoctor = action.payload.doctor;
+         state.selectedTime = null;
       },
       resetBooking: () => initialState,
    },
 });
 
-export const { goToStep, setSpecialty, setDoctor, setTime, resetBooking } =
-   bookingSlice.actions;
+export const {
+   goToStep,
+   setSpecialty,
+   setDoctor,
+   setTime,
+   goToPreviousStep,
+   resumeBooking,
+   resetBooking,
+} = bookingSlice.actions;
