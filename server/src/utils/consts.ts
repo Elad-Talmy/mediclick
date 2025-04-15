@@ -1,4 +1,5 @@
 export const FIVE_MINUTES_EXPIRY = Date.now() + 5 * 60 * 1000;
+export const TEN_MINUTES_EXPIRY = 600;
 
 //statuses
 export const OK = 200;
