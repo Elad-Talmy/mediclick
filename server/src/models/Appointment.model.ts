@@ -9,8 +9,8 @@ export interface IAppointment extends Document {
 
 const appointmentSchema = new Schema<IAppointment>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    doctorId: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+    doctorId: { type: Schema.Types.ObjectId, ref: "Doctors", required: true },
     dateTime: { type: Date, required: true },
     notes: { type: String },
   },

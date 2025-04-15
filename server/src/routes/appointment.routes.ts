@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { verifyToken } from "../middleware/auth.middleware";
 import {
-  getUserAppointments,
   createAppointment,
-} from "../controllers/appoitment.controller";
+  getUserAppointments,
+} from "../controllers/appointment.controller";
 
 const router = Router();
 

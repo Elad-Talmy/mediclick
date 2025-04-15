@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { Appointments } from "../models/Appoitment.model";
-import { CONFLICT, CREATED, OK } from "../utils/consts";
+import { Appointments } from "../models/Appointment.model";
+import {
+  CONFLICT,
+  CREATED,
+  INTERNAL_SERVER_ERROR,
+  OK,
+  UNAUTHORIZED,
+} from "../utils/consts";
+import { AuthRequest } from "../middleware/auth.middleware";
 
 export const createAppointment = async (
   req: Request,
@@ -37,18 +44,30 @@ export const createAppointment = async (
 };
 
 export const getUserAppointments = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user?.id;
+    console.log("userId :", userId);
+
+    if (!userId) {
+      res
+        .status(UNAUTHORIZED)
+        .json({ error: "Unauthorized: No user in request" });
+      return;
+    }
+
     const appointments = await Appointments.find({ userId })
       .populate("doctorId")
       .sort({ dateTime: -1 });
 
     res.status(OK).json(appointments);
   } catch (err) {
-    next(err);
+    console.error("Error in GET /appointments:", err);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json({ error: "Failed to fetch appointments" });
   }
 };
