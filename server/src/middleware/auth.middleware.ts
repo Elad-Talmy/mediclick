@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { UNAUTHORIZED } from "../utils/consts";
 
 interface AuthRequest extends Request {
   user?: string | jwt.JwtPayload;
@@ -13,7 +14,7 @@ export const verifyToken = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ error: "Unauthorized: No token provided" });
+    res.status(UNAUTHORIZED).json({ error: "Unauthorized: No token provided" });
     return;
   }
 
@@ -24,6 +25,6 @@ export const verifyToken = (
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ error: "Unauthorized: Invalid token" });
+    res.status(UNAUTHORIZED).json({ error: "Unauthorized: Invalid token" });
   }
 };

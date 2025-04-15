@@ -3,8 +3,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 import authRoutes from "./routes/auth.routes";
+import doctorRoutes from "./routes/doctor.routes";
+import appoitmentRoutes from "./routes/appoitment.routes";
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/appoitments", appoitmentRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI!)

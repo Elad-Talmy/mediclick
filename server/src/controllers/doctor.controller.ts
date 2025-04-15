@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { Doctor } from "../models/Doctor.model";
+import { Doctors } from "../models/Doctor.model";
+import { CREATED, NOT_FOUND, OK } from "../utils/consts";
 
 export const getAllDoctors = async (
   req: Request,
@@ -7,8 +8,8 @@ export const getAllDoctors = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const doctors = await Doctor.find();
-    res.status(200).json(doctors);
+    const doctors = await Doctors.find();
+    res.status(OK).json(doctors);
   } catch (err) {
     next(err);
   }
@@ -21,14 +22,14 @@ export const getDoctorById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const doctor = await Doctor.findById(id);
+    const doctor = await Doctors.findById(id);
 
     if (!doctor) {
-      res.status(404).json({ error: "Doctor not found" });
+      res.status(NOT_FOUND).json({ error: "Doctor not found" });
       return;
     }
 
-    res.status(200).json(doctor);
+    res.status(OK).json(doctor);
   } catch (err) {
     next(err);
   }
@@ -41,13 +42,13 @@ export const createDoctor = async (
 ): Promise<void> => {
   try {
     const { name, specialty, pfp, availableSlots } = req.body;
-    const newDoctor = await Doctor.create({
+    const newDoctor = await Doctors.create({
       name,
       specialty,
       pfp,
       availableSlots,
     });
-    res.status(201).json(newDoctor);
+    res.status(CREATED).json(newDoctor);
   } catch (err) {
     next(err);
   }

@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { User } from "../models/User.model";
-import { FIVE_MINUTES_EXPIRY } from "../utils/consts";
+import { Users } from "../models/User.model";
+import {
+  BAD_REQUEST,
+  FIVE_MINUTES_EXPIRY,
+  OK,
+  UNAUTHORIZED,
+} from "../utils/consts";
 
 const generateOTP = (): string => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -25,18 +30,18 @@ export const sendOTP = async (
   try {
     const { phone } = req.body;
     if (!phone) {
-      res.status(400).json({ error: "Phone number is required" });
+      res.status(BAD_REQUEST).json({ error: "Phone number is required" });
       return;
     }
 
-    let user = await User.findOne({ phone });
-    if (!user) user = await User.create({ phone });
+    let user = await Users.findOne({ phone });
+    if (!user) user = await Users.create({ phone });
 
     user.otp = generateOTP();
     user.otpExpires = getOTPExpiry();
     await user.save();
 
-    res.status(200).json({ otp: user.otp, phone, isNew: user.isVerified });
+    res.status(OK).json({ otp: user.otp, phone, isNew: user.isVerified });
   } catch (err) {
     next(err);
   }
@@ -49,7 +54,7 @@ export const verifyOTP = async (
 ): Promise<void> => {
   try {
     const { phone, otp } = req.body;
-    const user = await User.findOne({ phone });
+    const user = await Users.findOne({ phone });
 
     const isValidOTP =
       user &&
@@ -58,7 +63,7 @@ export const verifyOTP = async (
       user.otpExpires.getTime() > Date.now();
 
     if (!isValidOTP) {
-      res.status(401).json({ error: "Invalid or expired OTP" });
+      res.status(UNAUTHORIZED).json({ error: "Invalid or expired OTP" });
       return;
     }
 
@@ -69,7 +74,7 @@ export const verifyOTP = async (
 
     const token = createToken(user._id!.toString());
 
-    res.status(200).json({
+    res.status(OK).json({
       token,
       user: {
         id: user._id,
