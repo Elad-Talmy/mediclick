@@ -19,7 +19,7 @@ const getOTPExpiry = (): Date => {
 
 const createToken = (userId: string): string => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET!, {
-    expiresIn: "1h",
+    expiresIn: "5h",
   });
 };
 

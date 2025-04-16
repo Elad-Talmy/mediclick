@@ -11,6 +11,7 @@ export type Doctor = {
    name: string;
    specialty: string;
    pfp?: string;
+   availableSlots: string[];
 };
 
 export type BookingRequest = {

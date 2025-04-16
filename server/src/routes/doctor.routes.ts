@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   getAllDoctors,
-  getDoctorById,
   createDoctor,
   searchDoctors,
   getDoctorsBySpecialty,
