@@ -42,6 +42,21 @@ export const getDoctorById = async (
   }
 };
 
+export const getDoctorsBySpeciality = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { speciality } = req.body;
+    const doctors = await Doctors.find({ speciality: { $regex: speciality } });
+
+    res.status(OK).json(doctors);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const createDoctor = async (
   req: Request,
   res: Response,
@@ -91,6 +106,26 @@ export const searchDoctors = async (
       EX: TEN_MINUTES_EXPIRY,
     });
     res.json(doctors);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSpecialities = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const specialties = new Set<string>();
+
+    const doctors = await Doctors.find();
+
+    doctors.forEach((doc) => {
+      if (doc.speciality) specialties.add(doc.speciality.trim());
+    });
+
+    res.status(200).json([...specialties]);
   } catch (err) {
     next(err);
   }

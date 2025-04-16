@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setDoctor } from '../../../store';
-import { getDoctorsByField } from '../../../services/doctors';
-import { Doctor, RequestField } from '../../../types';
+import { Doctor } from '../../../types';
 import { useToast } from '../../../hooks';
+import { getDoctorsBySpeciality } from '../../../services/doctors';
 
 export const DoctorStep = () => {
    const toast = useToast();
    const dispatch = useAppDispatch();
    const selectedSpecialty = useAppSelector(
-      (state) => state.booking.selectedSpecialty
+      (state) => state.booking.selectedSpeciality
    );
    const [doctors, setDoctors] = useState<Doctor[]>([]);
    const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ export const DoctorStep = () => {
       if (!selectedSpecialty) return;
 
       setLoading(true);
-      getDoctorsByField(selectedSpecialty)
+      getDoctorsBySpeciality(selectedSpecialty)
          .then((doctors) => {
             setDoctors(doctors);
             setLoading(false);
@@ -29,7 +29,7 @@ export const DoctorStep = () => {
    }, [selectedSpecialty]);
 
    const handleSelect = useCallback(
-      (doctor: RequestField) => dispatch(setDoctor(doctor)),
+      (doctor: Doctor) => dispatch(setDoctor(doctor)),
       [dispatch]
    );
 
@@ -44,9 +44,9 @@ export const DoctorStep = () => {
                <li
                   key={doc.id}
                   className="booking-card"
-                  onClick={() => handleSelect({ id: doc.id, label: doc.name })}
+                  onClick={() => handleSelect(doc)}
                >
-                  <strong>{doc.name}</strong> — {doc.bio}
+                  <strong>{doc.name}</strong> — {doc.speciality}
                </li>
             ))}
          </ul>

@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getMedicalFields } from '../../services';
-import { MedicalField } from '../../types';
+import { getSpecialities } from '../../services';
 
-export const fetchMedicalFields = createAsyncThunk<MedicalField[]>(
+export const fetchMedicalFields = createAsyncThunk<string[]>(
    'medical/fetchFields',
    async (_, thunkAPI) => {
       try {
-         return await getMedicalFields();
+         return await getSpecialities();
       } catch {
          return thunkAPI.rejectWithValue('Failed to load medical fields');
       }
@@ -16,7 +15,7 @@ export const fetchMedicalFields = createAsyncThunk<MedicalField[]>(
 export const medicalSlice = createSlice({
    name: 'medical',
    initialState: {
-      fields: [] as MedicalField[],
+      fields: [] as string[],
    },
    reducers: {},
    extraReducers: (builder) => {

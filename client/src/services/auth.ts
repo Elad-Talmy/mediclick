@@ -9,4 +9,4 @@ export const verifyOtp = async (phone: string, otp: string, name: string) =>
    api.post(`${AUTH}/verify-otp`, { phone, otp, name });
 
 export const getUser = async (token: string) =>
-   api.post(`${AUTH}/user`, { token }, token);
+   api.post(`${AUTH}/user`, { token });

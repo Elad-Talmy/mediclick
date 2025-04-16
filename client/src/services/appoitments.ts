@@ -1,20 +1,8 @@
-import { AppointmentState, BookingRequest } from '../types';
+import { Appointment, AppointmentState } from '../types';
 import { api, API_BASE } from './api';
 
-export const bookAppointment = async (
-   booking: BookingRequest
-): Promise<void> => {
-   try {
-      return new Promise((resolve) => {
-         setTimeout(() => {
-            console.log('✅ Appointment booked:', booking);
-            resolve();
-         }, 700);
-      });
-   } catch (err) {
-      throw new Error('Booking failed. Please try again.');
-   }
-};
+export const bookAppointment = async (appointment: Appointment) =>
+   api.post(`/appointments`, { appointment });
 
 export const getAppointments = async (): Promise<AppointmentState> => {
    const token = localStorage.getItem('token');

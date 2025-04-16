@@ -17,12 +17,13 @@ export const createAppointment = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { doctorId, dateTime, notes } = req.body;
+    const { doctorId, time, notes } = req.body;
     const userId = (req as any).user.id;
 
+    console.log("appt created");
     const existing = await Appointments.findOne({
       userId,
-      dateTime: new Date(dateTime),
+      time,
     });
 
     if (existing) {
@@ -35,9 +36,11 @@ export const createAppointment = async (
     const appointment = await Appointments.create({
       userId,
       doctorId,
-      dateTime,
+      time,
       notes,
     });
+
+    console.log("appt scheduled");
 
     await Users.findByIdAndUpdate(userId, {
       firstActionCompleted: true,

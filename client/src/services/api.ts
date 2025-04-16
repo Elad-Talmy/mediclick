@@ -1,14 +1,15 @@
 export const API_BASE = import.meta.env.VITE_API_URL;
 
+const token = localStorage.getItem('token');
 export const api = {
-   get: async (endpoint: string, token?: string) => {
+   get: async (endpoint: string) => {
       const res = await fetch(`${API_BASE}${endpoint}`, {
          headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       return res.json();
    },
 
-   post: async (endpoint: string, body: any, token?: string) => {
+   post: async (endpoint: string, body: any) => {
       const res = await fetch(`${API_BASE}${endpoint}`, {
          method: 'POST',
          headers: {
@@ -20,7 +21,7 @@ export const api = {
       return res.json();
    },
 
-   delete: async (endpoint: string, token?: string) => {
+   delete: async (endpoint: string) => {
       const res = await fetch(`${API_BASE}${endpoint}`, {
          method: 'DELETE',
          headers: token ? { Authorization: `Bearer ${token}` } : {},

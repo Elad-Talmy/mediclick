@@ -29,7 +29,7 @@ export const TimeStep = () => {
 
    const handleSelect = useCallback(
       (slot: string) => {
-         dispatch(setTime({ label: `${selectedDay} ${slot}` }));
+         dispatch(setTime(`${selectedDay} ${slot}`));
       },
       [dispatch, selectedDay]
    );
@@ -45,7 +45,7 @@ export const TimeStep = () => {
                   className={`day-btn ${day === selectedDay ? 'active' : ''}`}
                   onClick={() => setSelectedDay(day)}
                >
-                  {formatTime(day)}
+                  {formatTime(day, false)}
                </button>
             ))}
          </div>

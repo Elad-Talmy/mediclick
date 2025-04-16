@@ -1,7 +1,5 @@
-import { MedicalField } from '../types';
-
 type Props = {
-   fields: MedicalField[];
+   fields: string[];
 };
 
 export const MedicalFieldList = ({ fields }: Props) => {
@@ -10,8 +8,8 @@ export const MedicalFieldList = ({ fields }: Props) => {
          <h3 className="section-title">Available Medical Services</h3>
          <ul className="field-list">
             {fields.map((f) => (
-               <li key={f.id} className="field-item">
-                  <strong>{f.name}</strong> — {f.description}
+               <li key={f} className="field-item">
+                  <strong>{f}</strong>
                </li>
             ))}
          </ul>

@@ -1,30 +1,30 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setSpecialty } from '../../../store';
-import { MedicalField, RequestField } from '../../../types';
 
 export const SpecialtyStep = memo(() => {
    const dispatch = useAppDispatch();
    const fields = useAppSelector((state) => state.medical.fields);
 
-   const handleSelect = (speciality: RequestField) => {
-      dispatch(setSpecialty(speciality));
-   };
+   const handleSelect = useCallback(
+      (speciality: string) => {
+         dispatch(setSpecialty(speciality));
+      },
+      [dispatch]
+   );
 
    return (
       <>
          <h2>Select a Medical Specialty</h2>
          <ul className="booking-list">
-            {fields.map((field: MedicalField) => (
+            {fields.map((field: string) => (
                <li
-                  key={field.id}
+                  key={field}
                   className="booking-card"
-                  onClick={() =>
-                     handleSelect({ id: field.id, label: field.name })
-                  }
+                  onClick={() => handleSelect(field)}
                >
-                  <strong>{field.name}</strong> — {field.description}
+                  <strong>{field}</strong>
                </li>
             ))}
          </ul>

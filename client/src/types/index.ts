@@ -1,20 +1,14 @@
-export type MedicalField = {
-   id: string;
-   name: string;
-   description: string;
-};
-
 export type Appointment = {
    id: string;
    time: string;
    doctor: Doctor;
-   speciality: RequestField;
+   speciality: string;
 };
 
 export type Doctor = {
    id: string;
    name: string;
-   specialty: string;
+   speciality: string;
    pfp?: string;
 };
 
@@ -39,9 +33,9 @@ export enum BookingStep {
 
 export interface BookingState {
    step: BookingStep;
-   selectedSpecialty: RequestField | null;
-   selectedDoctor: RequestField | null;
-   selectedTime: RequestField | null;
+   selectedSpecialty: string | null;
+   selectedDoctor: Doctor | null;
+   selectedTime: string | null;
 }
 
 export type AppointmentState = {
