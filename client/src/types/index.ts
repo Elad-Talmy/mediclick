@@ -2,13 +2,14 @@ export type Appointment = {
    id: string;
    time: string;
    doctor: Doctor;
-   speciality: string;
+   specialty: string;
+   note?: string;
 };
 
 export type Doctor = {
    id: string;
    name: string;
-   speciality: string;
+   specialty: string;
    pfp?: string;
 };
 

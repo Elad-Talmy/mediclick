@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IDoctor extends Document {
   name: string;
-  speciality: string;
+  specialty: string;
   pfp?: string;
   availableSlots: string[];
 }
@@ -10,7 +10,7 @@ export interface IDoctor extends Document {
 const doctorSchema = new Schema<IDoctor>(
   {
     name: { type: String, required: true },
-    speciality: { type: String, required: true },
+    specialty: { type: String, required: true },
     pfp: String,
     availableSlots: [String],
   },

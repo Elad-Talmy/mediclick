@@ -2,7 +2,7 @@ import { Appointment, AppointmentState } from '../types';
 import { api, API_BASE } from './api';
 
 export const bookAppointment = async (appointment: Appointment) =>
-   api.post(`/appointments`, { appointment });
+   api.post(`/appointments`, appointment);
 
 export const getAppointments = async (): Promise<AppointmentState> => {
    const token = localStorage.getItem('token');
@@ -15,7 +15,7 @@ export const getAppointments = async (): Promise<AppointmentState> => {
 };
 
 export const cancelAppointment = async (id: string, token: string) =>
-   api.delete(`/appointments/${id}`, token);
+   api.delete(`/appointments/${id}`);
 
 // export const rescheduleAppointment = async (
 //    id: string,

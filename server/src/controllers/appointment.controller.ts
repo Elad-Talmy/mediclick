@@ -17,12 +17,11 @@ export const createAppointment = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { doctorId, time, notes } = req.body;
-    const userId = (req as any).user.id;
+    const { doctor, time, notes } = req.body;
+    const user = (req as any).user.id;
 
-    console.log("appt created");
     const existing = await Appointments.findOne({
-      userId,
+      user,
       time,
     });
 
@@ -34,15 +33,13 @@ export const createAppointment = async (
     }
 
     const appointment = await Appointments.create({
-      userId,
-      doctorId,
+      user,
+      doctor,
       time,
       notes,
     });
 
-    console.log("appt scheduled");
-
-    await Users.findByIdAndUpdate(userId, {
+    await Users.findByIdAndUpdate(user, {
       firstActionCompleted: true,
     });
 
@@ -58,17 +55,16 @@ export const getUserAppointments = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.id;
-    console.log("userId :", userId);
+    const user = req.user?.id;
 
-    if (!userId) {
+    if (!user) {
       res
         .status(UNAUTHORIZED)
         .json({ error: "Unauthorized: No user in request" });
       return;
     }
 
-    const appointments = await Appointments.find({ userId })
+    const appointments = await Appointments.find({ user })
       .populate("doctor")
       .sort({ time: -1 });
 
@@ -88,6 +84,6 @@ const splitAppts = (appointments: IAppointment[]) => {
     appointments,
     (appt) => appt.time <= new Date()
   );
-  console.log({ past, upcoming });
+
   return [past, upcoming];
 };

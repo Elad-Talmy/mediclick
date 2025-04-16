@@ -9,7 +9,7 @@ import { AppView, goToView } from '../../../store/slices/viewSlice';
 export const ConfirmStep = memo(() => {
    const dispatch = useAppDispatch();
    const toast = useToast();
-   const { selectedSpeciality, selectedDoctor, selectedTime } = useAppSelector(
+   const { selectedSpecialty, selectedDoctor, selectedTime } = useAppSelector(
       (state) => state.booking
    );
 
@@ -17,7 +17,7 @@ export const ConfirmStep = memo(() => {
       try {
          await bookAppointment({
             id: uuid(),
-            speciality: selectedSpeciality!,
+            specialty: selectedSpecialty!,
             doctor: selectedDoctor!,
             time: selectedTime!,
          });
@@ -30,14 +30,14 @@ export const ConfirmStep = memo(() => {
       } catch (err: any) {
          toast.error(err.message || 'Booking failed.');
       }
-   }, [selectedDoctor, selectedSpeciality, selectedTime, dispatch, toast]);
+   }, [selectedDoctor, selectedSpecialty, selectedTime, dispatch, toast]);
 
    return (
       <div>
          <h2>Confirm Your Appointment</h2>
          <div className="booking-card">
             <p>
-               <strong>Speciality:</strong> {selectedSpeciality}
+               <strong>Specialty:</strong> {selectedSpecialty}
             </p>
             <p>
                <strong>Doctor:</strong> {selectedDoctor?.name}

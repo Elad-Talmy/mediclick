@@ -32,5 +32,5 @@ import { api } from './api';
 //    }
 // };
 
-export const getDoctorsBySpeciality = async (speciality: string) =>
-   api.post('/doctors/speciality', { speciality });
+export const getDoctorsBySpecialty = async (specialty: string) =>
+   api.post('/doctors/specialty', { specialty });

@@ -26,7 +26,7 @@ export const bookingSlice = createSlice({
          state.step = action.payload;
       },
       setSpecialty: (state, action: PayloadAction<string>) => {
-         state.selectedSpeciality = action.payload;
+         state.selectedSpecialty = action.payload;
          state.step = BookingStep.Doctor;
       },
       setDoctor: (state, action: PayloadAction<Doctor>) => {
@@ -45,7 +45,7 @@ export const bookingSlice = createSlice({
       },
       resumeBooking: (state, action: PayloadAction<Appointment>) => {
          state.step = BookingStep.Time;
-         state.selectedSpeciality = action.payload.speciality;
+         state.selectedSpecialty = action.payload.specialty;
          state.selectedDoctor = action.payload.doctor;
          state.selectedTime = null;
       },

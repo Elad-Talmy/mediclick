@@ -4,7 +4,7 @@ import {
   getDoctorById,
   createDoctor,
   searchDoctors,
-  getDoctorsBySpeciality,
+  getDoctorsBySpecialty,
   getSpecialities,
 } from "../controllers/doctor.controller";
 import { verifyToken } from "../middleware/auth.middleware";
@@ -12,8 +12,8 @@ import { verifyToken } from "../middleware/auth.middleware";
 const router = Router();
 
 router.get("/search", searchDoctors);
-router.get("/speciality", getSpecialities);
-router.post("/speciality", getDoctorsBySpeciality);
+router.get("/specialty", getSpecialities);
+router.post("/specialty", getDoctorsBySpecialty);
 router.get("/", getAllDoctors);
 router.post("/", verifyToken, createDoctor);
 

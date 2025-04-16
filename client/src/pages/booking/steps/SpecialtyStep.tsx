@@ -8,8 +8,8 @@ export const SpecialtyStep = memo(() => {
    const fields = useAppSelector((state) => state.medical.fields);
 
    const handleSelect = useCallback(
-      (speciality: string) => {
-         dispatch(setSpecialty(speciality));
+      (specialty: string) => {
+         dispatch(setSpecialty(specialty));
       },
       [dispatch]
    );

@@ -108,12 +108,6 @@ export const getCurrentUser = async (
       isNew: !user.firstActionCompleted,
       name: user.name,
     });
-    console.log({
-      id: user._id,
-      phone: user.phone,
-      isNew: !user.firstActionCompleted,
-      name: user.name,
-    });
   } catch (err) {
     res.status(500).json({ error: "Failed to get user" });
     return;

@@ -42,14 +42,14 @@ export const getDoctorById = async (
   }
 };
 
-export const getDoctorsBySpeciality = async (
+export const getDoctorsBySpecialty = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { speciality } = req.body;
-    const doctors = await Doctors.find({ speciality: { $regex: speciality } });
+    const { specialty } = req.body;
+    const doctors = await Doctors.find({ specialty: { $regex: specialty } });
 
     res.status(OK).json(doctors);
   } catch (err) {
@@ -122,7 +122,7 @@ export const getSpecialities = async (
     const doctors = await Doctors.find();
 
     doctors.forEach((doc) => {
-      if (doc.speciality) specialties.add(doc.speciality.trim());
+      if (doc.specialty) specialties.add(doc.specialty.trim());
     });
 
     res.status(200).json([...specialties]);

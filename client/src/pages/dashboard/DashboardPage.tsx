@@ -23,8 +23,6 @@ export const DashboardPage = memo(() => {
    const fields = useAppSelector((state) => state.medical.fields);
    const appointments = useAppSelector((state) => state.appointment);
 
-   console.log('Upcoming Appointments:', appointments.upcoming);
-
    useEffect(() => {
       dispatch(fetchUser());
       dispatch(fetchMedicalFields());
