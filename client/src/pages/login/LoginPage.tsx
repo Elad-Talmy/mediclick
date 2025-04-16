@@ -19,18 +19,18 @@ export const LoginPage = () => {
       }
 
       try {
-         const otp = await getOtp(phone);
-         alert(`Mock OTP: ${otp}`);
+         const response = await getOtp(phone);
+         alert(`Mock OTP: ${response.otp}`);
          setOtpSent(true);
       } catch (err) {
          alert('Failed to send OTP');
-         login('1111'); //remove when backend complete *************************************
       }
    }, [phone, ISRAELI_PHONE_REGEX]);
 
    const handleVerifyOtp = useCallback(async () => {
       try {
          const { token } = await verifyOtp(phone, otpInput);
+         if (!token) throw new Error('Invalid OTP');
          login(token);
       } catch (err) {
          alert('Invalid OTP');
