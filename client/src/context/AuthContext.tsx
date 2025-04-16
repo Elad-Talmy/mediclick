@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { AppView, goToView } from '../store/slices/viewSlice';
+import { fetchUser } from '../store/slices/userSlice';
 
 type AuthContextType = {
    token: string | null;
@@ -37,6 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       (newToken: string) => {
          localStorage.setItem('token', newToken);
          setToken(newToken);
+         fetchUser();
          dispatch(goToView(AppView.Dashboard));
       },
       [localStorage]

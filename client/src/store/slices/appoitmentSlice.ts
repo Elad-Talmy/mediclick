@@ -1,11 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Appointment } from '../../types';
 import { getAppointments } from '../../services';
-
-type AppointmentState = {
-   upcoming: Appointment[];
-   past: Appointment[];
-};
+import { AppointmentState } from '../../types';
 
 export const fetchAppointments = createAsyncThunk<AppointmentState>(
    'appointment/fetchAppointments',

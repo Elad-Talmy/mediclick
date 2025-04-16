@@ -6,16 +6,16 @@ export type MedicalField = {
 
 export type Appointment = {
    id: string;
-   time: RequestField;
-   doctor: RequestField;
+   time: string;
+   doctor: Doctor;
    speciality: RequestField;
 };
 
 export type Doctor = {
    id: string;
    name: string;
-   bio: string;
-   specialtyId: string;
+   specialty: string;
+   pfp?: string;
 };
 
 export type BookingRequest = {
@@ -43,3 +43,8 @@ export interface BookingState {
    selectedDoctor: RequestField | null;
    selectedTime: RequestField | null;
 }
+
+export type AppointmentState = {
+   upcoming: Appointment[];
+   past: Appointment[];
+};

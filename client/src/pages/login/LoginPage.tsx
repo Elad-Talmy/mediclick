@@ -5,22 +5,25 @@ import { ISRAELI_PHONE_REGEX } from '../../utils';
 import { Input } from '../../components';
 import { useAuth } from '../../context/AuthContext';
 import './LoginPage.less';
+import { useToast } from '../../hooks';
 
 export const LoginPage = () => {
+   const [name, setName] = useState('');
    const [phone, setPhone] = useState('');
    const [otpSent, setOtpSent] = useState(false);
    const [otpInput, setOtpInput] = useState('');
    const { login } = useAuth();
+   const toast = useToast();
 
    const handleSendOtp = useCallback(async () => {
       if (!phone.match(ISRAELI_PHONE_REGEX)) {
-         alert('Please enter a valid Israeli phone number.'); //Log to file
+         toast.error('Please enter a valid Israeli phone number.');
          return;
       }
 
       try {
          const response = await getOtp(phone);
-         alert(`Mock OTP: ${response.otp}`);
+         alert(`OTP: ${response.otp}`);
          setOtpSent(true);
       } catch (err) {
          alert('Failed to send OTP');
@@ -29,13 +32,13 @@ export const LoginPage = () => {
 
    const handleVerifyOtp = useCallback(async () => {
       try {
-         const { token } = await verifyOtp(phone, otpInput);
+         const { token } = await verifyOtp(phone, otpInput, name);
          if (!token) throw new Error('Invalid OTP');
          login(token);
       } catch (err) {
          alert('Invalid OTP');
       }
-   }, [phone, otpInput]);
+   }, [phone, otpInput, name]);
 
    return (
       <div className="login-container">
@@ -44,6 +47,12 @@ export const LoginPage = () => {
          <div className="login-card">
             <h2 className="login-title">Start Scheduling in Seconds</h2>
 
+            <Input
+               label="Full Name"
+               placeholder="Enter your full name"
+               value={name}
+               onChange={(e) => setName(e.target.value)}
+            />
             <Input
                label="Phone Number"
                placeholder="05XXXXXXXX"
@@ -69,7 +78,7 @@ export const LoginPage = () => {
                <Button
                   label="Send OTP"
                   onClick={handleSendOtp}
-                  disabled={!phone}
+                  disabled={!phone || !name}
                />
             )}
          </div>

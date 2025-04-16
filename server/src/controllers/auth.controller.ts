@@ -7,6 +7,7 @@ import {
   OK,
   UNAUTHORIZED,
 } from "../utils/consts";
+import { AuthenticatedRequest } from "../middleware/auth.middleware";
 
 const generateOTP = (): string => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -33,15 +34,16 @@ export const sendOTP = async (
       res.status(BAD_REQUEST).json({ error: "Phone number is required" });
       return;
     }
-
     let user = await Users.findOne({ phone });
-    if (!user) user = await Users.create({ phone });
+    if (!user) {
+      user = await Users.create({ phone });
+    }
 
     user.otp = generateOTP();
     user.otpExpires = getOTPExpiry();
     await user.save();
 
-    res.status(OK).json({ otp: user.otp, phone, isNew: user.isVerified });
+    res.status(OK).json({ otp: user.otp, phone });
   } catch (err) {
     next(err);
   }
@@ -53,7 +55,7 @@ export const verifyOTP = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { phone, otp } = req.body;
+    const { phone, otp, name } = req.body;
     const user = await Users.findOne({ phone });
 
     const isValidOTP =
@@ -70,6 +72,8 @@ export const verifyOTP = async (
     user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
+    user.name = name;
+    user.firstActionCompleted = user.firstActionCompleted ?? false;
     await user.save();
 
     const token = createToken(user._id!.toString());
@@ -79,9 +83,39 @@ export const verifyOTP = async (
       user: {
         id: user._id,
         phone: user.phone,
+        name: user.name,
       },
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const getCurrentUser = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    const user = await Users.findById(req.user?.id);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    res.json({
+      id: user._id,
+      phone: user.phone,
+      isNew: !user.firstActionCompleted,
+      name: user.name,
+    });
+    console.log({
+      id: user._id,
+      phone: user.phone,
+      isNew: !user.firstActionCompleted,
+      name: user.name,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get user" });
+    return;
   }
 };

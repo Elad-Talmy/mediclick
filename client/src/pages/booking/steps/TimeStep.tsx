@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { setTime } from '../../../store';
 import { DAYS, getAvailableSlotsByDay } from '../../../services/slots';
+import { formatTime } from '../../../utils';
 import './TimeStep.less';
 
 export const TimeStep = () => {
@@ -44,11 +45,7 @@ export const TimeStep = () => {
                   className={`day-btn ${day === selectedDay ? 'active' : ''}`}
                   onClick={() => setSelectedDay(day)}
                >
-                  {new Date(day).toLocaleDateString('en-GB', {
-                     weekday: 'short',
-                     day: 'numeric',
-                     month: 'short',
-                  })}
+                  {formatTime(day)}
                </button>
             ))}
          </div>

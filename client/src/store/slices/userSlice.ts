@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUser } from '../../services/user';
+import { getUser } from '../../services';
 
 export type User = {
    isNew: boolean;
@@ -10,8 +10,8 @@ export const fetchUser = createAsyncThunk<User>(
    'user/fetchUser',
    async (_, thunkAPI) => {
       try {
-         const res = await getUser();
-         return res;
+         const token = localStorage.getItem('token');
+         return await getUser(token!);
       } catch (error) {
          return thunkAPI.rejectWithValue('Failed to fetch user');
       }

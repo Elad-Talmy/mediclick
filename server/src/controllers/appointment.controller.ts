@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Appointments } from "../models/Appointment.model";
+import { Appointments, IAppointment } from "../models/Appointment.model";
 import {
   CONFLICT,
   CREATED,
@@ -8,6 +8,8 @@ import {
   UNAUTHORIZED,
 } from "../utils/consts";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { partition } from "lodash";
+import { Users } from "../models/User.model";
 
 export const createAppointment = async (
   req: Request,
@@ -25,7 +27,7 @@ export const createAppointment = async (
 
     if (existing) {
       res.status(CONFLICT).json({
-        error: `You already have an appoitment for this time with ${existing.doctorId}`,
+        error: `You already have an appoitment for this time with ${existing.doctor}`,
       });
       return;
     }
@@ -35,6 +37,10 @@ export const createAppointment = async (
       doctorId,
       dateTime,
       notes,
+    });
+
+    await Users.findByIdAndUpdate(userId, {
+      firstActionCompleted: true,
     });
 
     res.status(CREATED).json(appointment);
@@ -60,14 +66,25 @@ export const getUserAppointments = async (
     }
 
     const appointments = await Appointments.find({ userId })
-      .populate("doctorId")
-      .sort({ dateTime: -1 });
+      .populate("doctor")
+      .sort({ time: -1 });
 
-    res.status(OK).json(appointments);
+    const [past, upcoming] = splitAppts(appointments);
+
+    res.status(OK).json({ past, upcoming });
   } catch (err) {
     console.error("Error in GET /appointments:", err);
     res
       .status(INTERNAL_SERVER_ERROR)
       .json({ error: "Failed to fetch appointments" });
   }
+};
+
+const splitAppts = (appointments: IAppointment[]) => {
+  const [past, upcoming] = partition(
+    appointments,
+    (appt) => appt.time <= new Date()
+  );
+  console.log({ past, upcoming });
+  return [past, upcoming];
 };
