@@ -7,7 +7,7 @@ export type Appointment = {
 };
 
 export type Doctor = {
-   id: string;
+   _id: string;
    name: string;
    specialty: string;
    pfp?: string;

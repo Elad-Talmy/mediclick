@@ -39,10 +39,11 @@ export const DoctorStep = () => {
    return (
       <>
          <h2>Select a Doctor</h2>
+
          <ul className="booking-list">
             {doctors.map((doc) => (
                <li
-                  key={doc.id}
+                  key={doc._id}
                   className="booking-card"
                   onClick={() => handleSelect(doc)}
                >

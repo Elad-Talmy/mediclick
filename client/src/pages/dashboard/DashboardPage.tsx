@@ -5,7 +5,6 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import { fetchUser } from '../../store/slices/userSlice';
 import { fetchMedicalFields } from '../../store/slices/medicalSlice';
 import {
-   deleteAppointment,
    fetchAppointments,
    removeAppointment,
 } from '../../store/slices/appoitmentSlice';
