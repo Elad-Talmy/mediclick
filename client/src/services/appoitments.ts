@@ -11,10 +11,11 @@ export const getAppointments = async (): Promise<AppointmentState> => {
          Authorization: `Bearer ${token}`,
       },
    });
+
    return res.json();
 };
 
-export const cancelAppointment = async (id: string, token: string) =>
+export const cancelAppointment = async (id: string) =>
    api.delete(`/appointments/${id}`);
 
 // export const rescheduleAppointment = async (

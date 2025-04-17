@@ -1,10 +1,11 @@
-import { memo, useCallback, useEffect, useLayoutEffect } from 'react';
+import { memo, useCallback, useLayoutEffect } from 'react';
 import { MedicalFieldList, AppointmentList } from '../../components';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { fetchUser } from '../../store/slices/userSlice';
 import { fetchMedicalFields } from '../../store/slices/medicalSlice';
 import {
+   deleteAppointment,
    fetchAppointments,
    removeAppointment,
 } from '../../store/slices/appoitmentSlice';
@@ -32,6 +33,7 @@ export const DashboardPage = memo(() => {
    const handleCancel = useCallback(
       (id: string) => {
          dispatch(removeAppointment(id));
+         dispatch(deleteAppointment(id));
          toast.success('Appointment cancelled.');
       },
       [toast]

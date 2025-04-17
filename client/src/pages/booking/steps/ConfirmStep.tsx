@@ -16,13 +16,14 @@ export const ConfirmStep = memo(() => {
 
    const handleConfirm = useCallback(async () => {
       try {
-         await bookAppointment({
-            id: uuid(),
+         const response = await bookAppointment({
+            _id: uuid(),
             specialty: selectedSpecialty!,
             doctor: selectedDoctor!,
             time: selectedTime!,
          });
 
+         if (response.error) throw new Error(response.error);
          toast.success('Appointment confirmed!');
 
          clearBookingSession();
@@ -31,7 +32,14 @@ export const ConfirmStep = memo(() => {
       } catch (err: any) {
          toast.error(err.message || 'Booking failed.');
       }
-   }, [selectedDoctor, selectedSpecialty, selectedTime, dispatch, toast]);
+   }, [
+      selectedDoctor,
+      selectedSpecialty,
+      selectedTime,
+      dispatch,
+      toast,
+      clearBookingSession,
+   ]);
 
    return (
       <div>

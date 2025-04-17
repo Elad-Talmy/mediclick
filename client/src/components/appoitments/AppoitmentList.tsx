@@ -25,7 +25,7 @@ export const AppointmentList = memo(
 
             <ul>
                {appointments?.map((appt) => (
-                  <li key={appt.id} className="appt-card">
+                  <li key={appt._id} className="appt-card">
                      <div className="appt-card-left">
                         <div className="appt-time">{formatTime(appt.time)}</div>
 
@@ -52,7 +52,7 @@ export const AppointmentList = memo(
                      {showButtons && (
                         <div className="appt-card-right">
                            <button
-                              onClick={() => onCancel?.(appt.id)}
+                              onClick={() => onCancel?.(appt._id)}
                               className="appt-icon-btn cancel"
                               title="Cancel"
                            >

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { setTime } from '../../../store';
-import { format, isSameDay, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import './TimeStep.less';
 
 export const TimeStep = () => {
@@ -13,7 +13,6 @@ export const TimeStep = () => {
    const [selectedDay, setSelectedDay] = useState<string>();
    const [loading, setLoading] = useState(false);
 
-   // Fetch slots from server
    useEffect(() => {
       if (!doctor) return;
 
@@ -22,27 +21,23 @@ export const TimeStep = () => {
       setLoading(false);
    }, [doctor]);
 
-   // Extract unique days (yyyy-MM-dd) from slot strings
    const days = useMemo(() => {
-      const uniqueDays = new Set<string>();
-      slotStrings.forEach((slot) => {
-         const day = format(parseISO(slot), 'yyyy-MM-dd');
-         uniqueDays.add(day);
-      });
+      const uniqueDays = new Set(
+         slotStrings.map((iso) => format(parseISO(iso), 'yyyy-MM-dd'))
+      );
       return Array.from(uniqueDays).sort();
    }, [slotStrings]);
 
-   // Filter time slots for selected day
    const filteredSlots = useMemo(() => {
       if (!selectedDay) return [];
       return slotStrings.filter(
-         (slot) => format(parseISO(slot), 'yyyy-MM-dd') === selectedDay
+         (iso) => format(parseISO(iso), 'yyyy-MM-dd') === selectedDay
       );
    }, [slotStrings, selectedDay]);
 
    const handleSelect = useCallback(
       (slot: string) => {
-         dispatch(setTime(slot)); // ISO string
+         dispatch(setTime(slot));
       },
       [dispatch]
    );

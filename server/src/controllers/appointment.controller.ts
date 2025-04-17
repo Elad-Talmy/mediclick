@@ -10,6 +10,7 @@ import {
 import { AuthRequest } from "../middleware/auth.middleware";
 import { partition } from "lodash";
 import { Users } from "../models/User.model";
+import { Doctors } from "../models/Doctor.model";
 
 export const createAppointment = async (
   req: Request,
@@ -41,6 +42,10 @@ export const createAppointment = async (
 
     await Users.findByIdAndUpdate(user, {
       firstActionCompleted: true,
+    });
+
+    await Doctors.findByIdAndUpdate(doctor, {
+      $pull: { availableSlots: time },
     });
 
     res.status(CREATED).json(appointment);
@@ -76,6 +81,34 @@ export const getUserAppointments = async (
     res
       .status(INTERNAL_SERVER_ERROR)
       .json({ error: "Failed to fetch appointments" });
+  }
+};
+
+export const cancelAppointment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const userId = (req as any).user.id;
+
+    const appointment = await Appointments.findOne({ _id: id, user: userId });
+
+    if (!appointment) {
+      res.status(404).json({ error: "Appointment not found" });
+      return;
+    }
+    console.log(new Date(appointment.time).toISOString());
+    await Doctors.findByIdAndUpdate(appointment.doctor, {
+      $addToSet: { availableSlots: new Date(appointment.time).toISOString() },
+    });
+
+    await Appointments.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Appointment canceled successfully" });
+  } catch (err) {
+    next(err);
   }
 };
 

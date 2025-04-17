@@ -130,26 +130,3 @@ export const getSpecialities = async (
     next(err);
   }
 };
-
-export const getAvailableSlots = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const { doctorId } = req.body;
-
-    const doctor = await Doctors.findById(doctorId);
-
-    console.log(doctor);
-
-    if (!doctor) {
-      res.status(NOT_FOUND).json("Doctor doesn't exist");
-      return;
-    }
-
-    res.status(200).json(doctor?.availableSlots);
-  } catch (err) {
-    next(err);
-  }
-};
