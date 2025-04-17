@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect } from 'react';
 import { MedicalFieldList, AppointmentList } from '../../components';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -23,7 +23,7 @@ export const DashboardPage = memo(() => {
    const fields = useAppSelector((state) => state.medical.fields);
    const appointments = useAppSelector((state) => state.appointment);
 
-   useEffect(() => {
+   useLayoutEffect(() => {
       dispatch(fetchUser());
       dispatch(fetchMedicalFields());
       dispatch(fetchAppointments());

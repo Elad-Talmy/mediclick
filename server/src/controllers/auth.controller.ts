@@ -3,18 +3,15 @@ import { Request, Response, NextFunction } from "express";
 import { Users } from "../models/User.model";
 import {
   BAD_REQUEST,
-  FIVE_MINUTES_EXPIRY,
   OK,
+  TEN_MINUTES_EXPIRY,
   UNAUTHORIZED,
 } from "../utils/consts";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
+import { redis } from "../utils/redisClient";
 
 const generateOTP = (): string => {
   return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
-const getOTPExpiry = (): Date => {
-  return new Date(FIVE_MINUTES_EXPIRY);
 };
 
 const createToken = (userId: string): string => {
@@ -22,6 +19,8 @@ const createToken = (userId: string): string => {
     expiresIn: "5h",
   });
 };
+
+const createRedisOtpKey = (phone: string) => `${phone}-otp`;
 
 export const sendOTP = async (
   req: Request,
@@ -39,11 +38,16 @@ export const sendOTP = async (
       user = await Users.create({ phone });
     }
 
-    user.otp = generateOTP();
-    user.otpExpires = getOTPExpiry();
+    const otp = generateOTP();
+    const cacheKey = createRedisOtpKey(phone);
+
+    await redis.set(cacheKey, otp, {
+      EX: TEN_MINUTES_EXPIRY,
+    });
+
     await user.save();
 
-    res.status(OK).json({ otp: user.otp, phone });
+    res.status(OK).json({ otp, phone });
   } catch (err) {
     next(err);
   }
@@ -58,20 +62,14 @@ export const verifyOTP = async (
     const { phone, otp, name } = req.body;
     const user = await Users.findOne({ phone });
 
-    const isValidOTP =
-      user &&
-      user.otp === otp &&
-      user.otpExpires &&
-      user.otpExpires.getTime() > Date.now();
+    const cacheKey = createRedisOtpKey(phone);
+    const cached = await redis.get(cacheKey);
 
-    if (!isValidOTP) {
+    if (!cached || !user) {
       res.status(UNAUTHORIZED).json({ error: "Invalid or expired OTP" });
       return;
     }
 
-    user.isVerified = true;
-    user.otp = undefined;
-    user.otpExpires = undefined;
     user.name = name;
     user.firstActionCompleted = user.firstActionCompleted ?? false;
     await user.save();

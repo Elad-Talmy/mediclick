@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       (newToken: string) => {
          localStorage.setItem('token', newToken);
          setToken(newToken);
-         fetchUser();
          dispatch(goToView(AppView.Dashboard));
       },
       [localStorage]
