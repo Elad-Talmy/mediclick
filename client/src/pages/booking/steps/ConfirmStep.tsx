@@ -1,24 +1,28 @@
 import { v4 as uuid } from 'uuid';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { clearBookingSession } from '../../../context/BookingStorage';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { bookAppointment } from '../../../services';
 import { resetBooking } from '../../../store';
 import { AppView, goToView } from '../../../store/slices/viewSlice';
 import { format, parseISO } from 'date-fns';
+import { removeAppointment } from '../../../store/slices/appoitmentSlice';
 
 export const ConfirmStep = memo(() => {
    const dispatch = useAppDispatch();
    const toast = useToast();
-   const { selectedSpecialty, selectedDoctor, selectedTime } = useAppSelector(
-      (state) => state.booking
-   );
+   const { selectedSpecialty, selectedDoctor, selectedTime, rescheduleId } =
+      useAppSelector((state) => state.booking);
 
+   const specialty = useMemo(
+      () => selectedSpecialty || selectedDoctor?.specialty,
+      [selectedSpecialty, selectedDoctor]
+   );
    const handleConfirm = useCallback(async () => {
       try {
          const response = await bookAppointment({
             _id: uuid(),
-            specialty: selectedSpecialty!,
+            specialty: specialty!,
             doctor: selectedDoctor!,
             time: selectedTime!,
          });
@@ -26,6 +30,7 @@ export const ConfirmStep = memo(() => {
          if (response.error) throw new Error(response.error);
          toast.success('Appointment confirmed!');
 
+         if (rescheduleId) dispatch(removeAppointment(rescheduleId));
          clearBookingSession();
          dispatch(resetBooking());
          dispatch(goToView(AppView.Success));
@@ -46,13 +51,13 @@ export const ConfirmStep = memo(() => {
          <h2>Confirm Your Appointment</h2>
          <div className="booking-card">
             <p>
-               <strong>Specialty:</strong> {selectedSpecialty}
+               <strong>Specialty:</strong> {specialty}
             </p>
             <p>
                <strong>Doctor:</strong> {selectedDoctor?.name}
             </p>
             <p>
-               <strong>Time:</strong>
+               <strong>Time:</strong>{' '}
                {format(parseISO(selectedTime!), 'EEE, MMM d hh:mm')}
             </p>
          </div>

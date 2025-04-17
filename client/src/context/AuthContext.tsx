@@ -7,7 +7,6 @@ import {
 } from 'react';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { AppView, goToView } from '../store/slices/viewSlice';
-import { fetchUser } from '../store/slices/userSlice';
 
 type AuthContextType = {
    token: string | null;

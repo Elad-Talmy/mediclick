@@ -16,6 +16,7 @@ const initialState: BookingState = persisted || {
    selectedSpecialty: null,
    selectedDoctor: null,
    selectedTime: null,
+   rescheduleId: null,
 };
 
 export const bookingSlice = createSlice({
@@ -49,6 +50,9 @@ export const bookingSlice = createSlice({
          state.selectedDoctor = action.payload.doctor;
          state.selectedTime = null;
       },
+      setReschedule: (state, action: PayloadAction<string>) => {
+         state.rescheduleId = action.payload;
+      },
       resetBooking: () => initialState,
    },
 });
@@ -60,5 +64,6 @@ export const {
    setTime,
    goToPreviousStep,
    resumeBooking,
+   setReschedule,
    resetBooking,
 } = bookingSlice.actions;

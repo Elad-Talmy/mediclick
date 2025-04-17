@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { setTime } from '../../../store';
 import { format, parseISO } from 'date-fns';
 import './TimeStep.less';
 
 export const TimeStep = () => {
    const dispatch = useAppDispatch();
-   const toast = useToast();
    const doctor = useAppSelector((state) => state.booking.selectedDoctor);
 
    const [slotStrings, setSlotStrings] = useState<string[]>([]);

@@ -12,7 +12,7 @@ import {
 import { AppView, goToView } from '../../store/slices/viewSlice';
 import { Appointment } from '../../types';
 import { useToast } from '../../hooks';
-import { resumeBooking } from '../../store';
+import { resumeBooking, setReschedule } from '../../store';
 import './DashboardPage.less';
 
 export const DashboardPage = memo(() => {
@@ -33,7 +33,6 @@ export const DashboardPage = memo(() => {
    const handleCancel = useCallback(
       (id: string) => {
          dispatch(removeAppointment(id));
-         dispatch(deleteAppointment(id));
          toast.success('Appointment cancelled.');
       },
       [toast]
@@ -42,6 +41,7 @@ export const DashboardPage = memo(() => {
    const handleReschedule = useCallback(
       (appt: Appointment) => {
          dispatch(resumeBooking(appt));
+         dispatch(setReschedule(appt._id));
          dispatch(goToView(AppView.Booking));
       },
       [dispatch]

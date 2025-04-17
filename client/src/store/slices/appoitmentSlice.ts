@@ -17,6 +17,7 @@ export const removeAppointment = createAsyncThunk<AppointmentState, string>(
    'appointment/removeAppointment',
    async (id, thunkAPI) => {
       try {
+         thunkAPI.dispatch(deleteAppointment(id));
          return await cancelAppointment(id);
       } catch {
          return thunkAPI.rejectWithValue('Failed to load appointments');

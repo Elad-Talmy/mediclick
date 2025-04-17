@@ -38,6 +38,7 @@ export interface BookingState {
    selectedSpecialty: string | null;
    selectedDoctor: Doctor | null;
    selectedTime: string | null;
+   rescheduleId: string | null;
 }
 
 export type AppointmentState = {
