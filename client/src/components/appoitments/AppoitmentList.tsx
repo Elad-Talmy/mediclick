@@ -1,8 +1,8 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { Appointment } from '../../types';
-import { RotateCcw, X } from 'lucide-react';
-import './AppoitmentList.less';
+import { RotateCcw, X, StickyNote } from 'lucide-react'; // ⬅️ notes icon
 import { formatTime } from '../../utils';
+import './AppoitmentList.less';
 
 type Props = {
    title: string;
@@ -13,6 +13,7 @@ type Props = {
 
 export const AppointmentList = memo(
    ({ title, appointments, onCancel, onReschedule }: Props) => {
+      const [activeNote, setActiveNote] = useState<string | null>(null);
       const showButtons = useMemo(
          () => onCancel && onReschedule,
          [onCancel, onReschedule]
@@ -49,27 +50,60 @@ export const AppointmentList = memo(
                         </div>
                      </div>
 
-                     {showButtons && (
-                        <div className="appt-card-right">
+                     <div className="appt-card-right">
+                        {appt.notes && (
                            <button
-                              onClick={() => onCancel?.(appt._id)}
-                              className="appt-icon-btn cancel"
-                              title="Cancel"
+                              onClick={() => setActiveNote(appt.notes!)}
+                              className="appt-icon-btn note"
+                              title="View Notes"
                            >
-                              <X size={18} />
+                              <StickyNote size={18} />
                            </button>
-                           <button
-                              onClick={() => onReschedule?.(appt)}
-                              className="appt-icon-btn resched"
-                              title="Reschedule"
-                           >
-                              <RotateCcw size={18} />
-                           </button>
-                        </div>
-                     )}
+                        )}
+                        {showButtons && (
+                           <>
+                              <button
+                                 onClick={() => onCancel?.(appt._id)}
+                                 className="appt-icon-btn cancel"
+                                 title="Cancel"
+                              >
+                                 <X size={18} />
+                              </button>
+                              <button
+                                 onClick={() => onReschedule?.(appt)}
+                                 className="appt-icon-btn resched"
+                                 title="Reschedule"
+                              >
+                                 <RotateCcw size={18} />
+                              </button>
+                           </>
+                        )}
+                     </div>
                   </li>
                ))}
             </ul>
+
+            {/* 💬 Note Popup */}
+            {activeNote && (
+               <div
+                  className="note-popup-overlay"
+                  onClick={() => setActiveNote(null)}
+               >
+                  <div
+                     className="note-popup"
+                     onClick={(e) => e.stopPropagation()}
+                  >
+                     <h4>Doctor Notes</h4>
+                     <p>{activeNote}</p>
+                     <button
+                        className="close-btn"
+                        onClick={() => setActiveNote(null)}
+                     >
+                        Close
+                     </button>
+                  </div>
+               </div>
+            )}
          </div>
       );
    }

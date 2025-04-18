@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { clearBookingSession } from '../../../context/BookingStorage';
 import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
 import { bookAppointment } from '../../../services';
@@ -7,6 +7,7 @@ import { resetBooking } from '../../../store';
 import { AppView, goToView } from '../../../store/slices/viewSlice';
 import { format, parseISO } from 'date-fns';
 import { removeAppointment } from '../../../store/slices/appoitmentSlice';
+import { Input } from '../../../components';
 
 export const ConfirmStep = memo(() => {
    const dispatch = useAppDispatch();
@@ -14,10 +15,13 @@ export const ConfirmStep = memo(() => {
    const { selectedSpecialty, selectedDoctor, selectedTime, rescheduleId } =
       useAppSelector((state) => state.booking);
 
+   const [notes, setNotes] = useState('');
+
    const specialty = useMemo(
       () => selectedSpecialty || selectedDoctor?.specialty,
       [selectedSpecialty, selectedDoctor]
    );
+
    const handleConfirm = useCallback(async () => {
       try {
          const response = await bookAppointment({
@@ -25,6 +29,7 @@ export const ConfirmStep = memo(() => {
             specialty: specialty!,
             doctor: selectedDoctor!,
             time: selectedTime!,
+            notes,
          });
 
          if (response.error) throw new Error(response.error);
@@ -38,12 +43,13 @@ export const ConfirmStep = memo(() => {
          toast.error(err.message || 'Booking failed.');
       }
    }, [
+      specialty,
       selectedDoctor,
-      selectedSpecialty,
       selectedTime,
+      notes,
+      rescheduleId,
       dispatch,
       toast,
-      clearBookingSession,
    ]);
 
    return (
@@ -60,7 +66,15 @@ export const ConfirmStep = memo(() => {
                <strong>Time:</strong>{' '}
                {format(parseISO(selectedTime!), 'EEE, MMM d hh:mm')}
             </p>
+            <Input
+               className="notes-input"
+               label="Additional Notes"
+               placeholder="Add any notes for the doctor..."
+               value={notes}
+               onChange={(e) => setNotes(e.target.value)}
+            />
          </div>
+
          <button className="action-btn" onClick={handleConfirm}>
             Confirm Appointment
          </button>

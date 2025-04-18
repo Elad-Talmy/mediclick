@@ -3,47 +3,32 @@
    font-family: 'Segoe UI', sans-serif;
    background: linear-gradient(135deg, #f0fdf4, #ffffff);
    min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
 }
 
 .dashboard-header {
    font-size: 2rem;
    font-weight: bold;
    color: #009688;
+   margin-bottom: 2rem;
+   text-align: center;
+}
+
+.appt-list {
+   width: 100%;
+   max-width: 900px;
+}
+
+h3 {
+   font-size: 1.5rem;
    margin-bottom: 1rem;
-}
-
-.section-title {
-   font-size: 1.3rem;
-   font-weight: 600;
-   color: #00796b;
-   margin-top: 2rem;
-   margin-bottom: 0.5rem;
-}
-
-.field-list,
-.appointment-list {
-   list-style: none;
-   padding: 0;
-   margin: 0;
-}
-
-.field-item,
-.appointment-item {
-   background: #ffffff;
-   padding: 1rem;
-   margin-bottom: 1rem;
-   border-radius: 12px;
-   box-shadow: 0 4px 20px rgba(0, 150, 136, 0.1);
-   transition: transform 0.2s;
-}
-
-.field-item:hover,
-.appointment-item:hover {
-   transform: scale(1.02);
+   text-align: center;
 }
 
 .action-btn {
-   margin-top: 1.5rem;
+   margin-top: 2rem;
    padding: 0.75rem 1.25rem;
    background-color: #009688;
    color: white;
@@ -56,4 +41,21 @@
 
 .action-btn:hover {
    background-color: #00796b;
+}
+
+.appointment-list,
+.field-list {
+   width: 100%;
+   max-width: 880px;
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(10px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
 }

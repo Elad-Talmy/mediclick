@@ -36,7 +36,7 @@ export const LoginPage = () => {
          if (!token) throw new Error('Invalid OTP');
          login(token);
       } catch (err) {
-         alert('Invalid OTP');
+         toast.error('Invalid OTP');
       }
    }, [phone, otpInput, name]);
 

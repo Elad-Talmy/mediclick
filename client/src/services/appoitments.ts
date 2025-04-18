@@ -17,9 +17,3 @@ export const getAppointments = async (): Promise<AppointmentState> => {
 
 export const cancelAppointment = async (id: string) =>
    api.delete(`/appointments/${id}`);
-
-// export const rescheduleAppointment = async (
-//    id: string,
-//    newSlot: string,
-//    token: string
-// ) => api.post(`/appointments/${id}/reschedule`, { dateTime: newSlot }, token);
