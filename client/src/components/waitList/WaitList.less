@@ -1,0 +1,93 @@
+.dashboard-waitlist {
+   margin-top: 2rem;
+   background: #ffffff;
+   padding: 1.5rem;
+   border-radius: 16px;
+   box-shadow: 0 8px 24px rgba(0, 150, 136, 0.15);
+   animation: fadeIn 0.4s ease-in-out;
+}
+
+.waitlist-title {
+   font-size: 1.4rem;
+   color: #00796b;
+   font-weight: 600;
+   margin-bottom: 1rem;
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+}
+
+.waitlist-list {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+   display: flex;
+   flex-direction: column;
+   gap: 0.75rem;
+}
+
+.waitlist-card {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background-color: #f0fdf4;
+   border-radius: 12px;
+   padding: 0.75rem 1rem;
+   box-shadow: 0 4px 16px rgba(0, 150, 136, 0.08);
+   transition: transform 0.2s ease;
+}
+
+.waitlist-card:hover {
+   transform: translateY(-2px);
+}
+
+.waitlist-card-left {
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+}
+
+.waitlist-img {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   object-fit: cover;
+   box-shadow: 0 0 0 2px #00968833;
+}
+
+.waitlist-docname {
+   font-weight: 600;
+   color: #333;
+}
+
+.waitlist-specialty {
+   font-size: 0.9rem;
+   color: #666;
+}
+
+.waitlist-remove-btn {
+   background-color: #ffebee;
+   border: none;
+   border-radius: 50%;
+   padding: 6px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: background-color 0.2s ease;
+}
+
+.waitlist-remove-btn:hover {
+   background-color: #ffcdd2;
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(10px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}

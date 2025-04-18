@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { loadWaitlist } from '../../context/WaitListStorage';
 
-interface WaitlistState {
+export interface WaitlistState {
    subscribedDoctorIds: string[];
 }
 
-const initialState: WaitlistState = {
+const persisted = loadWaitlist();
+const initialState: WaitlistState = persisted || {
    subscribedDoctorIds: [],
 };
 
