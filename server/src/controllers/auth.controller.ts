@@ -8,7 +8,7 @@ import {
   UNAUTHORIZED,
 } from "../utils/consts";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
-import { redis } from "../utils/redisClient";
+import { redisClient } from "../utils/redisClient";
 
 const generateOTP = (): string => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -41,7 +41,7 @@ export const sendOTP = async (
     const otp = generateOTP();
     const cacheKey = createRedisOtpKey(phone);
 
-    await redis.set(cacheKey, otp, {
+    await redisClient.set(cacheKey, otp, {
       EX: TEN_MINUTES_EXPIRY,
     });
 
@@ -63,7 +63,7 @@ export const verifyOTP = async (
     const user = await Users.findOne({ phone });
 
     const cacheKey = createRedisOtpKey(phone);
-    const cached = await redis.get(cacheKey);
+    const cached = await redisClient.get(cacheKey);
 
     if (!cached || !user) {
       res.status(UNAUTHORIZED).json({ error: "Invalid or expired OTP" });

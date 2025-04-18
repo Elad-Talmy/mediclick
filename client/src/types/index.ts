@@ -3,7 +3,7 @@ export type Appointment = {
    time: string;
    doctor: Doctor;
    specialty: string;
-   note?: string;
+   notes?: string;
 };
 
 export type Doctor = {

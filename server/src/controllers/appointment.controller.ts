@@ -11,6 +11,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import { partition } from "lodash";
 import { Users } from "../models/User.model";
 import { Doctors } from "../models/Doctor.model";
+import { notifyDoctorSlotUpdate } from "../socket/waitlistSocket";
 
 export const createAppointment = async (
   req: Request,
@@ -99,10 +100,14 @@ export const cancelAppointment = async (
       res.status(404).json({ error: "Appointment not found" });
       return;
     }
-    console.log(new Date(appointment.time).toISOString());
+
+    const newSlot = new Date(appointment.time).toISOString();
+
     await Doctors.findByIdAndUpdate(appointment.doctor, {
-      $addToSet: { availableSlots: new Date(appointment.time).toISOString() },
+      $addToSet: { availableSlots: newSlot },
     });
+
+    notifyDoctorSlotUpdate(String(appointment.doctor), newSlot);
 
     await Appointments.findByIdAndDelete(id);
 

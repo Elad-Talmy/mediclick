@@ -13,10 +13,13 @@ import { Appointment } from '../../types';
 import { useToast } from '../../hooks';
 import { resumeBooking, setReschedule } from '../../store';
 import './DashboardPage.less';
+import { useWaitingList } from '../../hooks/useWaitingList';
+import { Waitlist } from '../../components/waitList/WaitList';
 
 export const DashboardPage = memo(() => {
    const dispatch = useAppDispatch();
    const toast = useToast();
+   const { unsubscribe } = useWaitingList();
 
    const user = useAppSelector((state) => state.user.data);
    const userStatus = useAppSelector((state) => state.user.status);
@@ -84,6 +87,8 @@ export const DashboardPage = memo(() => {
                >
                   Book New Appointment
                </button>
+
+               <Waitlist />
             </>
          )}
       </div>
