@@ -18,9 +18,9 @@ export const DoctorStep = () => {
    const [doctors, setDoctors] = useState<Doctor[]>([]);
    const [loading, setLoading] = useState(true);
 
-   const handleToggle = useCallback((doctor: Doctor) => {
-      const { _id } = doctor;
-      isSubscribed(_id) ? unsubscribe(_id) : subscribe(_id);
+   const handleToggle = useCallback((doctorId: string) => {
+      console.log(doctorId, isSubscribed(doctorId));
+      isSubscribed(doctorId) ? unsubscribe(doctorId) : subscribe(doctorId);
    }, []);
 
    useEffect(() => {
@@ -57,7 +57,7 @@ export const DoctorStep = () => {
                >
                   <strong>{doc.name}</strong> — {doc.specialty}
                   <button
-                     onClick={() => handleToggle(doc)}
+                     onClick={() => handleToggle(doc._id)}
                      className="bell-toggle"
                   >
                      {isSubscribed(doc._id) ? (

@@ -47,7 +47,8 @@ wss.on("connection", (ws, req) => {
 
 export const notifyDoctorSlotUpdate = async (
   doctorId: string,
-  newSlot: string
+  newSlot: string,
+  doctorName: string
 ) => {
   const userIds = await redisClient.sMembers(`waitlist:${doctorId}`);
   for (const userId of userIds) {
@@ -56,7 +57,11 @@ export const notifyDoctorSlotUpdate = async (
       ws?.send(
         JSON.stringify({
           type: "slot_update",
-          payload: { doctorId, slot: newSlot },
+          payload: {
+            doctorId,
+            slot: newSlot,
+            doctorName,
+          },
         })
       );
     }

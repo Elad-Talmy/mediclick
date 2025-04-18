@@ -4,13 +4,12 @@ import {
    subscribeDoctor,
    unsubscribeDoctor,
 } from '../store/slices/waitListSlice';
-import { Doctor } from '../types';
 
 export const useWaitingList = () => {
    const workerRef = useRef<Worker | null>(null);
    const toast = useToast();
    const dispatch = useAppDispatch();
-   const subscribedDoctors = useAppSelector(
+   const subscribedDoctorIds = useAppSelector(
       (state) => state.waitlist.subscribedDoctorIds
    );
 
@@ -29,7 +28,7 @@ export const useWaitingList = () => {
          const { type, payload } = e.data;
          if (type === 'SLOT_UPDATE') {
             toast.success(
-               `🎉 Slot for ${payload} at ${new Date(payload.slot).toLocaleTimeString()}`
+               `🎉 Slot for ${payload.doctorName} at ${new Date(payload.slot).toLocaleTimeString()}`
             );
          }
       };
@@ -41,10 +40,10 @@ export const useWaitingList = () => {
    }, []);
 
    useEffect(() => {
-      Object.keys(subscribedDoctors).forEach((id) =>
+      subscribedDoctorIds.forEach((id) =>
          workerRef.current?.postMessage({ type: 'subscribe', doctorId: id })
       );
-   }, [subscribedDoctors]);
+   }, [subscribedDoctorIds]);
 
    const subscribe = (doctorId: string) => {
       dispatch(subscribeDoctor(doctorId));
@@ -56,7 +55,7 @@ export const useWaitingList = () => {
    };
 
    const isSubscribed = (doctorId: string) =>
-      Object.keys(subscribedDoctors).includes(doctorId);
+      subscribedDoctorIds.includes(doctorId);
 
    return { subscribe, unsubscribe, isSubscribed };
 };

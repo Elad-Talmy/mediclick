@@ -10,7 +10,7 @@ import {
 import { AuthRequest } from "../middleware/auth.middleware";
 import { partition } from "lodash";
 import { Users } from "../models/User.model";
-import { Doctors } from "../models/Doctor.model";
+import { Doctors, IDoctor } from "../models/Doctor.model";
 import { notifyDoctorSlotUpdate } from "../socket/waitlistSocket";
 
 export const createAppointment = async (
@@ -94,7 +94,10 @@ export const cancelAppointment = async (
     const { id } = req.params;
     const userId = (req as any).user.id;
 
-    const appointment = await Appointments.findOne({ _id: id, user: userId });
+    const appointment = (await Appointments.findOne({
+      _id: id,
+      user: userId,
+    }).populate("doctor")) as unknown as IAppointment & { doctor: IDoctor };
 
     if (!appointment) {
       res.status(404).json({ error: "Appointment not found" });
@@ -103,11 +106,15 @@ export const cancelAppointment = async (
 
     const newSlot = new Date(appointment.time).toISOString();
 
-    await Doctors.findByIdAndUpdate(appointment.doctor, {
+    await Doctors.findByIdAndUpdate(appointment.doctor._id, {
       $addToSet: { availableSlots: newSlot },
     });
 
-    notifyDoctorSlotUpdate(String(appointment.doctor), newSlot);
+    notifyDoctorSlotUpdate(
+      appointment.doctor._id.toString(),
+      newSlot,
+      appointment.doctor.name
+    );
 
     await Appointments.findByIdAndDelete(id);
 

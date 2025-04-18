@@ -21,7 +21,7 @@ const sendMessage = async (msg: any) => {
       await waitForSocketOpen(socket);
       socket.send(JSON.stringify(msg));
    } catch (err) {
-      console.error('Failed to send:', err);
+      console.error('❌ Failed to send:', err);
    }
 };
 
