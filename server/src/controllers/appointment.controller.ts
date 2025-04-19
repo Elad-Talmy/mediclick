@@ -12,45 +12,82 @@ import { partition } from "lodash";
 import { Users } from "../models/User.model";
 import { Doctors, IDoctor } from "../models/Doctor.model";
 import { notifyDoctorSlotUpdate } from "../socket/waitlistSocket";
+import mongoose from "mongoose";
 
 export const createAppointment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { doctor, time, notes } = req.body;
-    const user = (req as any).user.id;
+    const userId = (req as any).user.id;
 
-    const existing = await Appointments.findOne({
-      user,
-      time,
-    });
-
+    // Ensure user doesn’t already have an appointment at this time
+    const existing = await Appointments.findOne({ user: userId, time }).session(
+      session
+    );
     if (existing) {
+      await session.abortTransaction();
+      session.endSession();
       res.status(CONFLICT).json({
-        error: `You already have an appoitment for this time with ${existing.doctor}`,
+        error: `You already have an appointment for this time with ${existing.doctor}`,
       });
       return;
     }
 
-    const appointment = await Appointments.create({
-      user,
+    // Check that the slot still exists
+    const doctorDoc = await Doctors.findOne({
+      _id: doctor,
+      availableSlots: time,
+    }).session(session);
+
+    if (!doctorDoc) {
+      await session.abortTransaction();
+      session.endSession();
+      res
+        .status(CONFLICT)
+        .json({ error: "Selected time slot is no longer available." });
+      return;
+    }
+
+    // Create the appointment
+    const appointment = await Appointments.create(
+      [
+        {
+          user: userId,
+          doctor,
+          time,
+          notes,
+        },
+      ],
+      { session }
+    );
+
+    // Remove the slot from the doctor's availability
+    await Doctors.findByIdAndUpdate(
       doctor,
-      time,
-      notes,
-    });
+      { $pull: { availableSlots: time } },
+      { session }
+    );
 
-    await Users.findByIdAndUpdate(user, {
-      firstActionCompleted: true,
-    });
+    // Update user profile
+    await Users.findByIdAndUpdate(
+      userId,
+      { firstActionCompleted: true },
+      { session }
+    );
 
-    await Doctors.findByIdAndUpdate(doctor, {
-      $pull: { availableSlots: time },
-    });
+    await session.commitTransaction();
+    session.endSession();
 
-    res.status(CREATED).json(appointment);
+    res.status(CREATED).json(appointment[0]);
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     next(err);
   }
 };

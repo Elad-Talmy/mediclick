@@ -1,6 +1,6 @@
 const WS_BASE = import.meta.env.PROD
    ? 'wss://mediclick.onrender.com/ws'
-   : 'ws://localhost:5001/ws';
+   : 'ws://localhost:5000/ws';
 
 let socket: WebSocket;
 let subscribedDoctorIds: string[] = [];
