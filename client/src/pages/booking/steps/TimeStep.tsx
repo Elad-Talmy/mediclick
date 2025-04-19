@@ -1,36 +1,46 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector, useToast } from '../../../hooks';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { setTime } from '../../../store';
-import { DAYS, getAvailableSlotsByDay } from '../../../services/slots';
+import { format, parseISO } from 'date-fns';
+import { useWaitingList } from '../../../hooks/useWaitingList';
 import './TimeStep.less';
 
 export const TimeStep = () => {
    const dispatch = useAppDispatch();
-   const toast = useToast();
-   const doctor = useAppSelector((state) => state.booking.selectedDoctor);
+   const doctor = useAppSelector((state) => state.booking.selectedDoctor)!;
+   const { subscribe, isSubscribed } = useWaitingList();
 
-   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
-   const [slots, setSlots] = useState<string[]>([]);
+   const [slotStrings, setSlotStrings] = useState<string[]>([]);
+   const [selectedDay, setSelectedDay] = useState<string>();
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
-      if (!doctor || !selectedDay) return;
-      setLoading(true);
+      if (!doctor) return;
 
-      getAvailableSlotsByDay(doctor.id!, selectedDay)
-         .then((res) => {
-            setSlots(res);
-            setLoading(false);
-         })
-         .catch(() => toast.error('Could not load time slots. Try again.'))
-         .finally(() => setLoading(false));
-   }, [doctor?.id, selectedDay]);
+      setLoading(true);
+      setSlotStrings(doctor.availableSlots);
+      setLoading(false);
+   }, [doctor]);
+
+   const days = useMemo(() => {
+      const uniqueDays = new Set(
+         slotStrings.map((iso) => format(parseISO(iso), 'yyyy-MM-dd'))
+      );
+      return Array.from(uniqueDays).sort();
+   }, [slotStrings]);
+
+   const filteredSlots = useMemo(() => {
+      if (!selectedDay) return [];
+      return slotStrings.filter(
+         (iso) => format(parseISO(iso), 'yyyy-MM-dd') === selectedDay
+      );
+   }, [slotStrings, selectedDay]);
 
    const handleSelect = useCallback(
       (slot: string) => {
-         dispatch(setTime({ label: `${selectedDay} ${slot}` }));
+         dispatch(setTime(slot));
       },
-      [dispatch, selectedDay]
+      [dispatch]
    );
 
    return (
@@ -38,32 +48,44 @@ export const TimeStep = () => {
          <h2>Choose a Time Slot</h2>
 
          <div className="day-selector">
-            {DAYS.map((day) => (
+            {days.map((day) => (
                <button
                   key={day}
                   className={`day-btn ${day === selectedDay ? 'active' : ''}`}
                   onClick={() => setSelectedDay(day)}
                >
-                  {new Date(day).toLocaleDateString('en-GB', {
-                     weekday: 'short',
-                     day: 'numeric',
-                     month: 'short',
-                  })}
+                  {format(parseISO(day), 'EEE, MMM d')}
                </button>
             ))}
          </div>
 
          {loading ? (
             <p>Loading slots...</p>
+         ) : days.length === 0 ? (
+            <div className="no-slots-msg">
+               <p>No available slots for the selected day.</p>
+               {!isSubscribed(doctor?._id) ? (
+                  <button
+                     className="waitlist-btn"
+                     onClick={() => subscribe(doctor._id)}
+                  >
+                     🔔 Join Waitlist
+                  </button>
+               ) : (
+                  <p className="already-subscribed">
+                     You're already on the waitlist 🎉
+                  </p>
+               )}
+            </div>
          ) : (
             <div className="slot-grid">
-               {slots.map((slot) => (
+               {filteredSlots.map((slot) => (
                   <button
                      key={slot}
                      className="slot"
                      onClick={() => handleSelect(slot)}
                   >
-                     {slot}
+                     {format(parseISO(slot), 'HH:mm')}
                   </button>
                ))}
             </div>

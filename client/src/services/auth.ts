@@ -1,14 +1,12 @@
-import axios from 'axios';
+import { api } from './api';
 
-const API = 'http://localhost:5000'; // replace with actual backend
-const AUTH = `${API}/auth`;
+const AUTH = '/auth';
 
-export const getOtp = async (phone: string) => {
-   const res = await axios.post(`${AUTH}/get-otp`, { phone });
-   return res.data.otp;
-};
+export const getOtp = async (phone: string) =>
+   api.post(`${AUTH}/get-otp`, { phone });
 
-export const verifyOtp = async (phone: string, otp: string) => {
-   const res = await axios.post(`${AUTH}/verify-otp`, { phone, otp });
-   return res.data; // contains JWT
-};
+export const verifyOtp = async (phone: string, otp: string, name: string) =>
+   api.post(`${AUTH}/verify-otp`, { phone, otp, name });
+
+export const getUser = async (token: string) =>
+   api.post(`${AUTH}/user`, { token });

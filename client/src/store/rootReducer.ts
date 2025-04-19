@@ -1,11 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { uiSlice } from './slices/uiSlice';
-import { bookingSlice } from './slices/bookingSlice';
-import { userSlice } from './slices/userSlice';
-import { medicalSlice } from './slices/medicalSlice';
-import { appointmentSlice } from './slices/appoitmentSlice';
-import { viewSlice } from './slices/viewSlice';
-//fix imports
+import {
+   uiSlice,
+   bookingSlice,
+   userSlice,
+   medicalSlice,
+   appointmentSlice,
+   viewSlice,
+   waitlistSlice,
+} from './slices';
 
 export const rootReducer = combineReducers({
    ui: uiSlice.reducer,
@@ -14,6 +16,7 @@ export const rootReducer = combineReducers({
    medical: medicalSlice.reducer,
    appointment: appointmentSlice.reducer,
    view: viewSlice.reducer,
+   waitlist: waitlistSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

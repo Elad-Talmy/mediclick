@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useLayoutEffect } from 'react';
 import { MedicalFieldList, AppointmentList } from '../../components';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -11,7 +11,8 @@ import {
 import { AppView, goToView } from '../../store/slices/viewSlice';
 import { Appointment } from '../../types';
 import { useToast } from '../../hooks';
-import { resumeBooking } from '../../store';
+import { resumeBooking, setReschedule } from '../../store';
+import { Waitlist } from '../../components/waitList/WaitList';
 import './DashboardPage.less';
 
 export const DashboardPage = memo(() => {
@@ -23,9 +24,7 @@ export const DashboardPage = memo(() => {
    const fields = useAppSelector((state) => state.medical.fields);
    const appointments = useAppSelector((state) => state.appointment);
 
-   console.log('Upcoming Appointments:', appointments.upcoming);
-
-   useEffect(() => {
+   useLayoutEffect(() => {
       dispatch(fetchUser());
       dispatch(fetchMedicalFields());
       dispatch(fetchAppointments());
@@ -42,6 +41,7 @@ export const DashboardPage = memo(() => {
    const handleReschedule = useCallback(
       (appt: Appointment) => {
          dispatch(resumeBooking(appt));
+         dispatch(setReschedule(appt._id));
          dispatch(goToView(AppView.Booking));
       },
       [dispatch]
@@ -85,6 +85,8 @@ export const DashboardPage = memo(() => {
                >
                   Book New Appointment
                </button>
+
+               <Waitlist />
             </>
          )}
       </div>

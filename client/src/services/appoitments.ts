@@ -1,54 +1,19 @@
-import { BookingRequest } from '../types';
+import { Appointment, AppointmentState } from '../types';
+import { api, API_BASE } from './api';
 
-export const getAppointments = async () => {
-   try {
-      console.log('apps');
-      return {
-         upcoming: [
-            {
-               id: 'a1',
-               time: { label: '2025-04-20' },
-               doctor: {
-                  label: 'Dr. Maya',
-                  id: 'aaa',
-                  pfp: 'https://i.pravatar.cc/150?img=47',
-               },
-               speciality: { label: 'Dermatology', id: '1234' },
-            },
-         ],
-         past: [
-            {
-               id: 'a2',
-               time: { label: '2025-03-10' },
-               doctor: {
-                  label: 'Dr. Ben',
-                  id: 'aa',
-                  pfp: 'https://i.pravatar.cc/150?img=51',
-               },
-               speciality: { label: 'Pediatrics', id: '123' },
-            },
-         ],
-      };
-   } catch (err) {
-      console.error('Fetch appointments failed:', err);
+export const bookAppointment = async (appointment: Appointment) =>
+   api.post(`/appointments`, appointment);
 
-      throw new Error('Could not load appointments.');
-   }
+export const getAppointments = async (): Promise<AppointmentState> => {
+   const token = localStorage.getItem('token');
+   const res = await fetch(`${API_BASE}/appointments`, {
+      headers: {
+         Authorization: `Bearer ${token}`,
+      },
+   });
+
+   return res.json();
 };
 
-export const bookAppointment = async (
-   booking: BookingRequest
-): Promise<void> => {
-   try {
-      // here i need to use the ids for the db
-
-      return new Promise((resolve) => {
-         setTimeout(() => {
-            console.log('✅ Appointment booked:', booking);
-            resolve();
-         }, 700);
-      });
-   } catch (err) {
-      throw new Error('Booking failed. Please try again.');
-   }
-};
+export const cancelAppointment = async (id: string) =>
+   api.delete(`/appointments/${id}`);

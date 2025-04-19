@@ -1,17 +1,24 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Appointment } from '../../types';
-import { getAppointments } from '../../services';
-
-type AppointmentState = {
-   upcoming: Appointment[];
-   past: Appointment[];
-};
+import { cancelAppointment, getAppointments } from '../../services';
+import { AppointmentState } from '../../types';
 
 export const fetchAppointments = createAsyncThunk<AppointmentState>(
    'appointment/fetchAppointments',
    async (_, thunkAPI) => {
       try {
          return await getAppointments();
+      } catch {
+         return thunkAPI.rejectWithValue('Failed to load appointments');
+      }
+   }
+);
+
+export const removeAppointment = createAsyncThunk<AppointmentState, string>(
+   'appointment/removeAppointment',
+   async (id, thunkAPI) => {
+      try {
+         thunkAPI.dispatch(deleteAppointment(id));
+         return await cancelAppointment(id);
       } catch {
          return thunkAPI.rejectWithValue('Failed to load appointments');
       }
@@ -25,9 +32,9 @@ export const appointmentSlice = createSlice({
       past: [],
    } as AppointmentState,
    reducers: {
-      removeAppointment: (state, action: PayloadAction<string>) => {
+      deleteAppointment: (state, action: PayloadAction<string>) => {
          state.upcoming = state.upcoming.filter(
-            (appointment) => appointment.id !== action.payload
+            (appointment) => appointment._id !== action.payload
          );
       },
    },
@@ -39,4 +46,4 @@ export const appointmentSlice = createSlice({
    },
 });
 
-export const { removeAppointment } = appointmentSlice.actions;
+export const { deleteAppointment } = appointmentSlice.actions;

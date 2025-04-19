@@ -7,7 +7,7 @@ import {
   OK,
   TEN_MINUTES_EXPIRY,
 } from "../utils/consts";
-import { redis } from "../utils/redisClient";
+import { redisClient } from "../utils/redisClient";
 
 export const getAllDoctors = async (
   req: Request,
@@ -22,21 +22,36 @@ export const getAllDoctors = async (
   }
 };
 
-export const getDoctorById = async (
+export const getDoctorsById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const doctor = await Doctors.findById(id);
+    const { ids } = req.body;
+    const doctors = await Doctors.find({ _id: { $in: ids } });
 
-    if (!doctor) {
-      res.status(NOT_FOUND).json({ error: "Doctor not found" });
+    if (!doctors) {
+      res.status(NOT_FOUND).json({ error: "Doctors not found" });
       return;
     }
 
-    res.status(OK).json(doctor);
+    res.status(OK).json(doctors);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getDoctorsBySpecialty = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { specialty } = req.body;
+    const doctors = await Doctors.find({ specialty: { $regex: specialty } });
+
+    res.status(OK).json(doctors);
   } catch (err) {
     next(err);
   }
@@ -74,7 +89,7 @@ export const searchDoctors = async (
     }
 
     const cacheKey = `doctor-search:${query.toLowerCase()}`;
-    const cached = await redis.get(cacheKey);
+    const cached = await redisClient.get(cacheKey);
     if (cached) {
       res.json(JSON.parse(cached));
       return;
@@ -87,10 +102,30 @@ export const searchDoctors = async (
       ],
     }).limit(10);
 
-    await redis.set(cacheKey, JSON.stringify(doctors), {
+    await redisClient.set(cacheKey, JSON.stringify(doctors), {
       EX: TEN_MINUTES_EXPIRY,
     });
     res.json(doctors);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSpecialities = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const specialties = new Set<string>();
+
+    const doctors = await Doctors.find();
+
+    doctors.forEach((doc) => {
+      if (doc.specialty) specialties.add(doc.specialty.trim());
+    });
+
+    res.status(200).json([...specialties]);
   } catch (err) {
     next(err);
   }

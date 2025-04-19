@@ -2,17 +2,15 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser extends Document {
   phone: string;
-  isVerified: boolean;
-  otp?: string;
-  otpExpires?: Date;
+  name: string;
+  firstActionCompleted?: boolean;
 }
 
 const userSchema = new Schema<IUser>(
   {
     phone: { type: String, required: true, unique: true },
-    isVerified: { type: Boolean, default: false },
-    otp: String,
-    otpExpires: Date,
+    name: String,
+    firstActionCompleted: Boolean,
   },
   { timestamps: true }
 );

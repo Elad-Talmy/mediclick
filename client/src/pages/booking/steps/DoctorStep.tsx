@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { setDoctor } from '../../../store';
-import { getDoctorsByField } from '../../../services/doctors';
-import { Doctor, RequestField } from '../../../types';
+import { Doctor } from '../../../types';
 import { useToast } from '../../../hooks';
+import { getDoctorsBySpecialty } from '../../../services/doctors';
 
 export const DoctorStep = () => {
    const toast = useToast();
@@ -19,7 +19,7 @@ export const DoctorStep = () => {
       if (!selectedSpecialty) return;
 
       setLoading(true);
-      getDoctorsByField(selectedSpecialty)
+      getDoctorsBySpecialty(selectedSpecialty)
          .then((doctors) => {
             setDoctors(doctors);
             setLoading(false);
@@ -29,7 +29,7 @@ export const DoctorStep = () => {
    }, [selectedSpecialty]);
 
    const handleSelect = useCallback(
-      (doctor: RequestField) => dispatch(setDoctor(doctor)),
+      (doctor: Doctor) => dispatch(setDoctor(doctor)),
       [dispatch]
    );
 
@@ -39,14 +39,15 @@ export const DoctorStep = () => {
    return (
       <>
          <h2>Select a Doctor</h2>
+
          <ul className="booking-list">
             {doctors.map((doc) => (
                <li
-                  key={doc.id}
+                  key={doc._id}
                   className="booking-card"
-                  onClick={() => handleSelect({ id: doc.id, label: doc.name })}
+                  onClick={() => handleSelect(doc)}
                >
-                  <strong>{doc.name}</strong> — {doc.bio}
+                  <strong>{doc.name}</strong> — {doc.specialty}
                </li>
             ))}
          </ul>

@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-   Appointment,
-   BookingState,
-   BookingStep,
-   RequestField,
-} from '../../types';
+import { Appointment, BookingState, BookingStep, Doctor } from '../../types';
 import { loadBookingSession } from '../../context/BookingStorage';
 
 export const STEP_ORDER = [
@@ -21,6 +16,7 @@ const initialState: BookingState = persisted || {
    selectedSpecialty: null,
    selectedDoctor: null,
    selectedTime: null,
+   rescheduleId: null,
 };
 
 export const bookingSlice = createSlice({
@@ -30,15 +26,15 @@ export const bookingSlice = createSlice({
       goToStep: (state, action: PayloadAction<BookingStep>) => {
          state.step = action.payload;
       },
-      setSpecialty: (state, action: PayloadAction<RequestField>) => {
+      setSpecialty: (state, action: PayloadAction<string>) => {
          state.selectedSpecialty = action.payload;
          state.step = BookingStep.Doctor;
       },
-      setDoctor: (state, action: PayloadAction<RequestField>) => {
+      setDoctor: (state, action: PayloadAction<Doctor>) => {
          state.selectedDoctor = action.payload;
          state.step = BookingStep.Time;
       },
-      setTime: (state, action: PayloadAction<RequestField>) => {
+      setTime: (state, action: PayloadAction<string>) => {
          state.selectedTime = action.payload;
          state.step = BookingStep.Confirm;
       },
@@ -50,9 +46,12 @@ export const bookingSlice = createSlice({
       },
       resumeBooking: (state, action: PayloadAction<Appointment>) => {
          state.step = BookingStep.Time;
-         state.selectedSpecialty = action.payload.speciality;
+         state.selectedSpecialty = action.payload.specialty;
          state.selectedDoctor = action.payload.doctor;
          state.selectedTime = null;
+      },
+      setReschedule: (state, action: PayloadAction<string>) => {
+         state.rescheduleId = action.payload;
       },
       resetBooking: () => initialState,
    },
@@ -65,5 +64,6 @@ export const {
    setTime,
    goToPreviousStep,
    resumeBooking,
+   setReschedule,
    resetBooking,
 } = bookingSlice.actions;
