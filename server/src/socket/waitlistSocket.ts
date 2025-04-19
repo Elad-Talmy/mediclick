@@ -30,15 +30,12 @@ wss.on("connection", (ws, req) => {
 
     if (data.type === "subscribe") {
       const { doctorId } = data;
-      console.log({ doctorId });
       await redisClient.sAdd(`waitlist:${doctorId}`, userId);
       await redisClient.sAdd(`user:${userId}:waitlist`, doctorId);
     }
 
     if (data.type === "unsubscribe") {
       const { doctorId } = data;
-      console.log({ doctorId });
-
       await redisClient.sRem(`waitlist:${doctorId}`, userId);
       await redisClient.sRem(`user:${userId}:waitlist`, doctorId);
     }
