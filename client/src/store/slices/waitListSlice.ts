@@ -6,6 +6,7 @@ export interface WaitlistState {
 }
 
 const persisted = loadWaitlist();
+
 const initialState: WaitlistState = persisted || {
    subscribedDoctorIds: [],
 };

@@ -15,7 +15,6 @@ app.use(
   })
 );
 app.use(express.json());
-app.options("*", cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/doctors", doctorRoutes);

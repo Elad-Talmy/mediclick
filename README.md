@@ -78,8 +78,8 @@ npm run dev
 
 ### Database Models
 
-- `User`: phone, isVerified, firstActionCompleted, name
-- `Doctor`: name, specialty, profile pic, availableSlots
+- `User`: \_id, phone, firstActionCompleted, name
+- `Doctor`: \_id, name, specialty, profile pic, availableSlots
 - `Appointment`: doctor (ref), user (ref), time, note
 
 ---

@@ -8,7 +8,9 @@ const wss = new WebSocketServer({ port: 8080 });
 const userSockets = new Map<string, WebSocket>();
 
 wss.on("connection", (ws, req) => {
-  const token = new URL(req.url!, "http://localhost").searchParams.get("token");
+  const token = new URL(req.url!, process.env.CLIENT_URL).searchParams.get(
+    "token"
+  );
   let userId: string;
 
   try {
@@ -16,7 +18,6 @@ wss.on("connection", (ws, req) => {
     userId = (payload as any).id;
     userSockets.set(userId, ws);
 
-    console.log({ userId });
     ws.on("close", () => {
       userSockets.delete(userId);
     });
