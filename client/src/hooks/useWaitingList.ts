@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector, useToast } from '../hooks';
 import {
    subscribeDoctor,
@@ -15,23 +15,11 @@ export const useWaitingList = () => {
 
    useEffect(() => {
       const token = localStorage.getItem('token');
-      if (!token) return;
-
       workerRef.current = new Worker(
          new URL('../worker/waitingWorker.ts', import.meta.url),
          { type: 'module' }
       );
-
       workerRef.current.postMessage({ type: 'init', token });
-
-      workerRef.current.onmessage = (e) => {
-         const { type, payload } = e.data;
-         if (type === 'SLOT_UPDATE') {
-            toast.success(
-               `🎉 Slot for ${payload.doctorName} at ${new Date(payload.slot).toLocaleTimeString()}`
-            );
-         }
-      };
 
       return () => {
          workerRef.current?.terminate();
@@ -44,6 +32,19 @@ export const useWaitingList = () => {
          workerRef.current?.postMessage({ type: 'subscribe', doctorId: id })
       );
    }, [subscribedDoctorIds]);
+
+   useEffect(() => {
+      workerRef.current!.onmessage = (e) => {
+         const { type, payload } = e.data;
+         if (type === 'SLOT_UPDATE') {
+            toast.success(
+               `🎉 New slot for doctor ${payload.doctorName} at ${new Date(
+                  payload.slot
+               ).toLocaleTimeString()}`
+            );
+         }
+      };
+   }, []);
 
    const subscribe = (doctorId: string) => {
       dispatch(subscribeDoctor(doctorId));

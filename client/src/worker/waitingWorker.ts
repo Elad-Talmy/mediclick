@@ -1,35 +1,39 @@
+const WS_BASE = import.meta.env.PROD
+   ? 'wss://mediclick.onrender.com/ws'
+   : 'ws://localhost:5001/ws';
+
 let socket: WebSocket;
 let subscribedDoctorIds: string[] = [];
 
-const waitForSocketOpen = (socket: WebSocket): Promise<void> =>
-   new Promise((resolve, reject) => {
-      const maxAttempts = 10;
-      let attempt = 0;
+const waitForOpenConnection = (socket: WebSocket): Promise<void> => {
+   return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
          if (socket.readyState === WebSocket.OPEN) {
             clearInterval(interval);
             resolve();
-         } else if (++attempt >= maxAttempts) {
-            clearInterval(interval);
-            reject(new Error('WebSocket failed to open.'));
          }
-      }, 200);
+      }, 100);
+      setTimeout(() => {
+         clearInterval(interval);
+         reject(new Error('Timeout while connecting to WebSocket'));
+      }, 5000);
    });
+};
 
-const sendMessage = async (msg: any) => {
+const sendMessage = async (message: any) => {
    try {
-      await waitForSocketOpen(socket);
-      socket.send(JSON.stringify(msg));
+      await waitForOpenConnection(socket);
+      socket.send(JSON.stringify(message));
    } catch (err) {
-      console.error('❌ Failed to send:', err);
+      console.error('Failed to send WebSocket message:', err);
    }
 };
 
-onmessage = async (event) => {
+onmessage = (event) => {
    const { type, doctorId, token } = event.data;
 
    if (type === 'init') {
-      socket = new WebSocket(`ws://localhost:8080?token=${token}`);
+      socket = new WebSocket(`${WS_BASE}?token=${token}`);
       socket.onmessage = (e) => {
          const data = JSON.parse(e.data);
          if (data.type === 'slot_update') {
