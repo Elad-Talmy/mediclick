@@ -3,7 +3,7 @@ import { useWaitingList } from '../../hooks/useWaitingList';
 import { useQuery } from '@tanstack/react-query';
 import { getDoctorsById } from '../../services/doctors';
 import { Trash2 } from 'lucide-react';
-import './Waitlist.less';
+import './WaitList.less';
 
 export const Waitlist = () => {
    const subscribedDoctorIds = useAppSelector(
