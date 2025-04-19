@@ -8,11 +8,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL!],
+    origin: process.env.CLIENT_URL || "*",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
+app.options("*", cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/doctors", doctorRoutes);
