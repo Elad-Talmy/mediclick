@@ -1,0 +1,177 @@
+.appt-card {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background: #ffffff;
+   border-radius: 16px;
+   padding: 1rem 1.5rem;
+   box-shadow: 0 8px 20px rgba(0, 150, 136, 0.1);
+   margin-bottom: 1.25rem;
+   transition: all 0.2s ease-in-out;
+   gap: 1rem;
+}
+
+.appt-card:hover {
+   transform: translateY(-2px);
+}
+
+.appt-card-left {
+   display: flex;
+   align-items: center;
+   flex-wrap: wrap;
+   gap: 1rem;
+   flex: 1;
+}
+
+.appt-time {
+   background-color: #009688;
+   color: white;
+   padding: 0.5rem 1rem;
+   border-radius: 12px;
+   font-weight: bold;
+   font-size: 0.95rem;
+   box-shadow: 0 2px 8px rgba(0, 150, 136, 0.15);
+}
+
+.appt-doctor-wrap {
+   display: flex;
+   flex-direction: column;
+   gap: 0.3rem;
+}
+
+.appt-doctor-row {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   font-weight: 600;
+}
+
+.appt-doctor-pfp {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   object-fit: cover;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.appt-specialty {
+   font-size: 0.9rem;
+   color: #444;
+   display: flex;
+   align-items: center;
+   gap: 0.3rem;
+}
+
+.appt-card-right {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+}
+
+.appt-icon-btn {
+   border: none;
+   background: #f5f5f5;
+   border-radius: 50%;
+   padding: 0.4rem;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: background 0.2s ease;
+}
+
+.appt-icon-btn:hover {
+   background: #e0f2f1;
+}
+
+.appt-icon-btn.cancel {
+   background: #ffeaea;
+}
+
+.appt-icon-btn.cancel:hover {
+   background: #ffcccc;
+}
+
+.appt-icon-btn.resched {
+   background: #e5f9e7;
+}
+
+.appt-icon-btn.resched:hover {
+   background: #c8f2d1;
+}
+
+.appt-icon-btn.note {
+   background: #eef6fb;
+}
+
+.appt-icon-btn.note:hover {
+   background: #cde7f4;
+}
+
+.appt-list p {
+   font-size: 1.05rem;
+   color: #555;
+   text-align: center;
+   margin-top: 0.5rem;
+}
+
+.note-popup-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100vw;
+   height: 100vh;
+   background: rgba(0, 0, 0, 0.5);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 999;
+}
+
+.note-popup {
+   background: #fff;
+   padding: 2rem;
+   border-radius: 16px;
+   max-width: 500px;
+   width: 90%;
+   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+   animation: popFade 0.3s ease-in-out;
+}
+
+.note-popup h4 {
+   margin-bottom: 1rem;
+   color: #00796b;
+}
+
+.note-popup p {
+   font-size: 1rem;
+   line-height: 1.4;
+   white-space: pre-wrap;
+}
+
+.close-btn {
+   margin-top: 1rem;
+   background: #009688;
+   color: white;
+   border: none;
+   padding: 0.5rem 1rem;
+   border-radius: 8px;
+   font-weight: bold;
+   cursor: pointer;
+   transition: background-color 0.2s ease;
+}
+
+.close-btn:hover {
+   background-color: #00796b;
+}
+
+@keyframes popFade {
+   from {
+      opacity: 0;
+      transform: scale(0.95);
+   }
+   to {
+      opacity: 1;
+      transform: scale(1);
+   }
+}
