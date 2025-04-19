@@ -26,7 +26,7 @@ export const LoginPage = () => {
          alert(`OTP: ${response.otp}`);
          setOtpSent(true);
       } catch (err) {
-         alert('Failed to send OTP');
+         toast.error('Failed to send OTP');
       }
    }, [phone, ISRAELI_PHONE_REGEX]);
 

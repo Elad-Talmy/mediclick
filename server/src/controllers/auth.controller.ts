@@ -65,7 +65,7 @@ export const verifyOTP = async (
     const cacheKey = createRedisOtpKey(phone);
     const cached = await redisClient.get(cacheKey);
 
-    if (!cached || !user) {
+    if (!cached || !user || cached !== otp) {
       res.status(UNAUTHORIZED).json({ error: "Invalid or expired OTP" });
       return;
     }
